@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Villas - Wanderly</title>
+    <title>All Villas - Wanderly</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
@@ -15,8 +15,8 @@
         <div class="logo">Wanderly</div>
         <div class="nav-links">
             <a href="/index.html">Home</a>
-            <a href="/tour.html">Tour</a>
-            <a href="/villa.html" class="active">Villa</a>
+            <a href="/tour.html">Tours</a>
+            <a href="/villa.html" class="active">Villas</a>
             <a href="/admin.html" class="btn-admin">Admin</a>
         </div>
     </div>
@@ -24,15 +24,17 @@
 
 <main>
     <div class="container section">
-        <h2 class="section-title">🏝️ Villa Mewah & Private</h2>
-        <div class="grid" id="villa-list">
+        <h2 class="section-title">Luxury Villas</h2>
+        <div class="grid" id="villaList">
             <div class="spinner"></div>
         </div>
     </div>
 </main>
 
 <footer>
-    <div class="container">© 2025 Wanderly — Premium Travel Booking</div>
+    <div class="container footer-content">
+        <p>© 2024 Wanderly — Premium Travel Booking</p>
+    </div>
 </footer>
 
 <a href="https://wa.me/6281234567890" class="float-wa" target="_blank">
@@ -44,7 +46,7 @@
         try {
             const res = await fetch('/api/villas');
             const villas = await res.json();
-            const container = document.getElementById('villa-list');
+            const container = document.getElementById('villaList');
             if (!villas.length) {
                 container.innerHTML = '<p style="text-align:center">Belum ada data villa</p>';
                 return;
@@ -53,15 +55,23 @@
                 <div class="card" onclick="location.href='/detail.html?type=villa&id=${villa.id}'">
                     <img class="card-img" src="${villa.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" alt="${villa.name}">
                     <div class="card-content">
-                        <div class="card-title">${villa.name}</div>
-                        <div class="card-price">Rp ${new Intl.NumberFormat('id-ID').format(villa.price)}/malam</div>
-                        <div>${villa.location || 'Bali'}</div>
-                        <div style="margin-top:12px"><span class="btn-outline">View Detail →</span></div>
+                        <div class="card-title">${escapeHtml(villa.name)}</div>
+                        <div class="card-price">Rp ${new Intl.NumberFormat('id-ID').format(villa.price)}<span style="font-size:0.9rem;">/malam</span></div>
+                        <div class="card-detail"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(villa.location || 'Bali')}</div>
+                        <div style="margin-top: 16px;"><span class="btn-outline">View Details →</span></div>
                     </div>
                 </div>
             `).join('');
         } catch(e) { console.error(e); }
     }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
     loadVillas();
 </script>
 </body>

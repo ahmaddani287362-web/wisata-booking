@@ -1,7 +1,7 @@
 {
   "name": "wisata-booking",
   "version": "1.0.0",
-  "description": "Tour & Villa Booking Website",
+  "description": "Premium Tour & Villa Booking Website",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

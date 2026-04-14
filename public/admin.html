@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Wanderly</title>
+    <title>Admin Panel Premium - Wanderly</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
@@ -15,7 +15,7 @@
         <div class="logo">Wanderly Admin</div>
         <div class="nav-links">
             <a href="/index.html">Home</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <a href="#" onclick="logout()" class="btn-admin">Logout</a>
         </div>
     </div>
 </div>
@@ -24,7 +24,7 @@
     <div class="container section">
         <!-- Login Form -->
         <div id="loginForm" class="admin-login">
-            <h2 style="text-align:center;">Admin Login</h2>
+            <h2>🔐 Admin Login</h2>
             <input type="text" id="username" placeholder="Username" value="admin">
             <input type="password" id="password" placeholder="Password" value="admin123">
             <button class="btn-primary" onclick="login()" style="width:100%">Login</button>
@@ -32,29 +32,43 @@
         
         <!-- Admin Panel -->
         <div id="adminPanel" style="display:none;">
-            <!-- Add Tour -->
+            <!-- Stats Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 40px;">
+                <div style="background: linear-gradient(135deg, #0f766e, #14b8a6); padding: 24px; border-radius: 24px; color: white;">
+                    <h3 style="font-size: 2rem;" id="tourCount">0</h3>
+                    <p>Total Tours</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #0f766e, #14b8a6); padding: 24px; border-radius: 24px; color: white;">
+                    <h3 style="font-size: 2rem;" id="villaCount">0</h3>
+                    <p>Total Villas</p>
+                </div>
+            </div>
+            
+            <!-- Add Tour Form -->
             <div class="admin-section">
-                <h2>➕ Tambah Tour</h2>
-                <form id="addTourForm">
-                    <input type="text" name="title" placeholder="Nama Tour" required style="width:100%; padding:10px; margin:5px 0;">
-                    <input type="number" name="price" placeholder="Harga" required style="width:100%; padding:10px; margin:5px 0;">
-                    <input type="text" name="duration" placeholder="Durasi (4D3N)" style="width:100%; padding:10px; margin:5px 0;">
-                    <textarea name="description" placeholder="Deskripsi" style="width:100%; padding:10px; margin:5px 0;"></textarea>
-                    <textarea name="itinerary" placeholder="Itinerary" style="width:100%; padding:10px; margin:5px 0;"></textarea>
-                    <button type="submit" class="btn-primary">Simpan Tour</button>
+                <h2>➕ Tambah Tour Baru</h2>
+                <form id="addTourForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <input type="text" name="title" placeholder="Nama Tour" required style="grid-column: span 2;">
+                    <input type="number" name="price" placeholder="Harga (Rp)" required>
+                    <input type="text" name="duration" placeholder="Durasi (4D3N)">
+                    <input type="text" name="imageUrl" placeholder="URL Gambar (opsional)" style="grid-column: span 2;">
+                    <textarea name="description" placeholder="Deskripsi" style="grid-column: span 2;" rows="3"></textarea>
+                    <textarea name="itinerary" placeholder="Itinerary (pisahkan dengan newline)" style="grid-column: span 2;" rows="4"></textarea>
+                    <button type="submit" class="btn-primary" style="grid-column: span 2;">Simpan Tour</button>
                 </form>
             </div>
             
-            <!-- Add Villa -->
+            <!-- Add Villa Form -->
             <div class="admin-section">
-                <h2>➕ Tambah Villa</h2>
-                <form id="addVillaForm">
-                    <input type="text" name="name" placeholder="Nama Villa" required style="width:100%; padding:10px; margin:5px 0;">
-                    <input type="number" name="price" placeholder="Harga per malam" required style="width:100%; padding:10px; margin:5px 0;">
-                    <input type="text" name="location" placeholder="Lokasi" style="width:100%; padding:10px; margin:5px 0;">
-                    <textarea name="description" placeholder="Deskripsi" style="width:100%; padding:10px; margin:5px 0;"></textarea>
-                    <textarea name="facilities" placeholder="Fasilitas" style="width:100%; padding:10px; margin:5px 0;"></textarea>
-                    <button type="submit" class="btn-primary">Simpan Villa</button>
+                <h2>🏡 Tambah Villa Baru</h2>
+                <form id="addVillaForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <input type="text" name="name" placeholder="Nama Villa" required style="grid-column: span 2;">
+                    <input type="number" name="price" placeholder="Harga per malam (Rp)" required>
+                    <input type="text" name="location" placeholder="Lokasi">
+                    <input type="text" name="imageUrl" placeholder="URL Gambar (opsional)" style="grid-column: span 2;">
+                    <textarea name="description" placeholder="Deskripsi" style="grid-column: span 2;" rows="3"></textarea>
+                    <textarea name="facilities" placeholder="Fasilitas (pisahkan dengan koma)" style="grid-column: span 2;" rows="3"></textarea>
+                    <button type="submit" class="btn-primary" style="grid-column: span 2;">Simpan Villa</button>
                 </form>
             </div>
             
@@ -73,7 +87,46 @@
     </div>
 </main>
 
+<!-- Modal Edit -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">✏️ Edit Data</h3>
+        <form id="editForm">
+            <input type="hidden" id="editId">
+            <input type="hidden" id="editType">
+            <div id="editFields"></div>
+            <div class="modal-buttons">
+                <button type="submit" class="btn-primary">Simpan Perubahan</button>
+                <button type="button" class="btn-outline" onclick="closeModal()">Batal</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Delete Confirm -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h3>⚠️ Konfirmasi Hapus</h3>
+        <p style="margin: 20px 0;">Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.</p>
+        <div class="modal-buttons" style="justify-content: center;">
+            <button class="btn-danger" id="confirmDeleteBtn">Ya, Hapus</button>
+            <button class="btn-outline" onclick="closeDeleteModal()">Batal</button>
+        </div>
+    </div>
+</div>
+
 <script>
+    let pendingDeleteId = null;
+    let pendingDeleteType = null;
+    
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
     async function login() {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
@@ -85,40 +138,63 @@
         if (res.ok) {
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
-            loadTours();
-            loadVillas();
+            showToast('Login berhasil! Selamat datang Admin');
+            loadAllData();
         } else {
-            alert('Login gagal!');
+            showToast('Login gagal! Periksa username dan password', 'error');
         }
     }
     
     async function logout() {
         await fetch('/api/admin/logout', { method: 'POST' });
-        location.reload();
+        showToast('Logout berhasil');
+        setTimeout(() => location.reload(), 1000);
+    }
+    
+    async function loadAllData() {
+        await loadTours();
+        await loadVillas();
     }
     
     async function loadTours() {
         const res = await fetch('/api/tours');
         const tours = await res.json();
+        document.getElementById('tourCount').innerText = tours.length;
         if (!tours.length) {
-            document.getElementById('toursTable').innerHTML = '<p>Belum ada data</p>';
+            document.getElementById('toursTable').innerHTML = '<p style="text-align:center; padding:40px;">Belum ada data tour</p>';
             return;
         }
         document.getElementById('toursTable').innerHTML = `
             <table>
-                <tr><th>ID</th><th>Nama</th><th>Harga</th><th>Durasi</th><th>Aksi</th></tr>
-                ${tours.map(t => `
+                <thead>
                     <tr>
-                        <td>${t.id}</td>
-                        <td>${t.title}</td>
-                        <td>Rp ${new Intl.NumberFormat('id-ID').format(t.price)}</td>
-                        <td>${t.duration || '-'}</td>
-                        <td>
-                            <button class="btn-edit" onclick="editTour(${t.id})">Edit</button>
-                            <button class="btn-delete" onclick="deleteTour(${t.id})">Hapus</button>
-                        </td>
+                        <th>ID</th>
+                        <th>Gambar</th>
+                        <th>Nama</th>
+                        <th>Harga</th>
+                        <th>Durasi</th>
+                        <th>Aksi</th>
                     </tr>
-                `).join('')}
+                </thead>
+                <tbody>
+                    ${tours.map(t => `
+                        <tr>
+                            <td>${t.id}</td>
+                            <td><img src="${t.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" width="50" height="50" style="border-radius:12px; object-fit:cover;"></td>
+                            <td><strong>${escapeHtml(t.title)}</strong></td>
+                            <td>Rp ${new Intl.NumberFormat('id-ID').format(t.price)}</td>
+                            <td>${t.duration || '-'}</td>
+                            <td>
+                                <button class="btn-warning" onclick="openEditModal('tour', ${t.id})" style="padding:8px 16px; margin:0 4px;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-danger" onclick="confirmDelete('tour', ${t.id})" style="padding:8px 16px; margin:0 4px;">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
             </table>
         `;
     }
@@ -126,98 +202,218 @@
     async function loadVillas() {
         const res = await fetch('/api/villas');
         const villas = await res.json();
+        document.getElementById('villaCount').innerText = villas.length;
         if (!villas.length) {
-            document.getElementById('villasTable').innerHTML = '<p>Belum ada data</p>';
+            document.getElementById('villasTable').innerHTML = '<p style="text-align:center; padding:40px;">Belum ada data villa</p>';
             return;
         }
         document.getElementById('villasTable').innerHTML = `
-            <table>
-                <tr><th>ID</th><th>Nama</th><th>Harga</th><th>Lokasi</th><th>Aksi</th></tr>
-                ${villas.map(v => `
+            <table style="width:100%">
+                <thead>
                     <tr>
-                        <td>${v.id}</td>
-                        <td>${v.name}</td>
-                        <td>Rp ${new Intl.NumberFormat('id-ID').format(v.price)}</td>
-                        <td>${v.location || '-'}</td>
-                        <td>
-                            <button class="btn-edit" onclick="editVilla(${v.id})">Edit</button>
-                            <button class="btn-delete" onclick="deleteVilla(${v.id})">Hapus</button>
-                        </td>
+                        <th>ID</th>
+                        <th>Gambar</th>
+                        <th>Nama</th>
+                        <th>Harga</th>
+                        <th>Lokasi</th>
+                        <th>Aksi</th>
                     </tr>
-                `).join('')}
+                </thead>
+                <tbody>
+                    ${villas.map(v => `
+                        <tr>
+                            <td>${v.id}</td>
+                            <td><img src="${v.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" width="50" height="50" style="border-radius:12px; object-fit:cover;"></td>
+                            <td><strong>${escapeHtml(v.name)}</strong></td>
+                            <td>Rp ${new Intl.NumberFormat('id-ID').format(v.price)}/malam</td>
+                            <td>${escapeHtml(v.location) || '-'}</td>
+                            <td>
+                                <button class="btn-warning" onclick="openEditModal('villa', ${v.id})" style="padding:8px 16px; margin:0 4px;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-danger" onclick="confirmDelete('villa', ${v.id})" style="padding:8px 16px; margin:0 4px;">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
             </table>
         `;
     }
     
+    // Add Tour Form
     document.getElementById('addTourForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        await fetch('/api/tours', { method: 'POST', body: formData });
-        loadTours();
-        e.target.reset();
-        alert('Tour berhasil ditambahkan!');
+        const data = {
+            title: formData.get('title'),
+            price: parseInt(formData.get('price')),
+            duration: formData.get('duration'),
+            imageUrl: formData.get('imageUrl'),
+            description: formData.get('description'),
+            itinerary: formData.get('itinerary')
+        };
+        const res = await fetch('/api/tours', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (res.ok) {
+            showToast('Tour berhasil ditambahkan!');
+            loadTours();
+            e.target.reset();
+        } else {
+            showToast('Gagal menambahkan tour', 'error');
+        }
     });
     
+    // Add Villa Form
     document.getElementById('addVillaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        await fetch('/api/villas', { method: 'POST', body: formData });
-        loadVillas();
-        e.target.reset();
-        alert('Villa berhasil ditambahkan!');
+        const data = {
+            name: formData.get('name'),
+            price: parseInt(formData.get('price')),
+            location: formData.get('location'),
+            imageUrl: formData.get('imageUrl'),
+            description: formData.get('description'),
+            facilities: formData.get('facilities')
+        };
+        const res = await fetch('/api/villas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (res.ok) {
+            showToast('Villa berhasil ditambahkan!');
+            loadVillas();
+            e.target.reset();
+        } else {
+            showToast('Gagal menambahkan villa', 'error');
+        }
     });
     
-    async function deleteTour(id) {
-        if (confirm('Hapus tour ini?')) {
-            await fetch(`/api/tours/${id}`, { method: 'DELETE' });
-            loadTours();
+    // Open Edit Modal
+    async function openEditModal(type, id) {
+        const res = await fetch(`/api/${type}s/${id}`);
+        const item = await res.json();
+        
+        document.getElementById('editId').value = id;
+        document.getElementById('editType').value = type;
+        document.getElementById('modalTitle').innerHTML = type === 'tour' ? '✏️ Edit Tour' : '✏️ Edit Villa';
+        
+        let fieldsHtml = '';
+        if (type === 'tour') {
+            fieldsHtml = `
+                <input type="text" id="editTitle" value="${escapeHtml(item.title)}" placeholder="Nama Tour" required>
+                <input type="number" id="editPrice" value="${item.price}" placeholder="Harga" required>
+                <input type="text" id="editDuration" value="${item.duration || ''}" placeholder="Durasi (4D3N)">
+                <input type="text" id="editImageUrl" value="${item.image || ''}" placeholder="URL Gambar">
+                <textarea id="editDescription" placeholder="Deskripsi" rows="3">${escapeHtml(item.description || '')}</textarea>
+                <textarea id="editItinerary" placeholder="Itinerary" rows="4">${escapeHtml(item.itinerary || '')}</textarea>
+            `;
+        } else {
+            fieldsHtml = `
+                <input type="text" id="editName" value="${escapeHtml(item.name)}" placeholder="Nama Villa" required>
+                <input type="number" id="editPrice" value="${item.price}" placeholder="Harga per malam" required>
+                <input type="text" id="editLocation" value="${escapeHtml(item.location || '')}" placeholder="Lokasi">
+                <input type="text" id="editImageUrl" value="${item.image || ''}" placeholder="URL Gambar">
+                <textarea id="editDescription" placeholder="Deskripsi" rows="3">${escapeHtml(item.description || '')}</textarea>
+                <textarea id="editFacilities" placeholder="Fasilitas" rows="3">${escapeHtml(item.facilities || '')}</textarea>
+            `;
         }
+        
+        document.getElementById('editFields').innerHTML = fieldsHtml;
+        document.getElementById('editModal').classList.add('active');
     }
     
-    async function deleteVilla(id) {
-        if (confirm('Hapus villa ini?')) {
-            await fetch(`/api/villas/${id}`, { method: 'DELETE' });
-            loadVillas();
+    // Edit Form Submit
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editId').value;
+        const type = document.getElementById('editType').value;
+        
+        let data = {};
+        if (type === 'tour') {
+            data = {
+                title: document.getElementById('editTitle').value,
+                price: parseInt(document.getElementById('editPrice').value),
+                duration: document.getElementById('editDuration').value,
+                imageUrl: document.getElementById('editImageUrl').value,
+                description: document.getElementById('editDescription').value,
+                itinerary: document.getElementById('editItinerary').value
+            };
+        } else {
+            data = {
+                name: document.getElementById('editName').value,
+                price: parseInt(document.getElementById('editPrice').value),
+                location: document.getElementById('editLocation').value,
+                imageUrl: document.getElementById('editImageUrl').value,
+                description: document.getElementById('editDescription').value,
+                facilities: document.getElementById('editFacilities').value
+            };
         }
+        
+        const res = await fetch(`/api/${type}s/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        if (res.ok) {
+            showToast('Data berhasil diupdate!');
+            closeModal();
+            loadAllData();
+        } else {
+            showToast('Gagal mengupdate data', 'error');
+        }
+    });
+    
+    // Confirm Delete
+    function confirmDelete(type, id) {
+        pendingDeleteId = id;
+        pendingDeleteType = type;
+        document.getElementById('deleteModal').classList.add('active');
     }
     
-    async function editTour(id) {
-        const res = await fetch(`/api/tours/${id}`);
-        const tour = await res.json();
-        const title = prompt('Nama tour:', tour.title);
-        const price = prompt('Harga:', tour.price);
-        if (title && price) {
-            await fetch(`/api/tours/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...tour, title, price: parseInt(price) })
-            });
-            loadTours();
+    // Execute Delete
+    document.getElementById('confirmDeleteBtn').onclick = async () => {
+        if (pendingDeleteId && pendingDeleteType) {
+            const res = await fetch(`/api/${pendingDeleteType}s/${pendingDeleteId}`, { method: 'DELETE' });
+            if (res.ok) {
+                showToast('Data berhasil dihapus!');
+                closeDeleteModal();
+                loadAllData();
+            } else {
+                showToast('Gagal menghapus data', 'error');
+            }
         }
+    };
+    
+    function closeModal() {
+        document.getElementById('editModal').classList.remove('active');
     }
     
-    async function editVilla(id) {
-        const res = await fetch(`/api/villas/${id}`);
-        const villa = await res.json();
-        const name = prompt('Nama villa:', villa.name);
-        const price = prompt('Harga:', villa.price);
-        if (name && price) {
-            await fetch(`/api/villas/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...villa, name, price: parseInt(price) })
-            });
-            loadVillas();
-        }
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('active');
+        pendingDeleteId = null;
+        pendingDeleteType = null;
     }
     
-    // Check if already logged in
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Check auth on load
     fetch('/api/admin/check').then(res => res.json()).then(data => {
         if (data.isAdmin) {
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
-            loadTours();
-            loadVillas();
+            loadAllData();
         }
     });
 </script>

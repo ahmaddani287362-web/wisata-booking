@@ -18,13 +18,13 @@ app.use(express.static('public'));
 
 // Session
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'secret-key',
+    secret: 'premium-wisata-secret',
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 3600000 }
 }));
 
-// Multer for memory storage (for Vercel)
+// Multer memory storage for Vercel
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -67,20 +67,20 @@ app.get('/api/tours', async (req, res) => {
 app.get('/api/tours/:id', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM tours WHERE id = $1', [req.params.id]);
-        res.json(result.rows[0] || {});
+        res.json(result.rows[0] || null);
     } catch (err) {
-        res.json({});
+        res.json(null);
     }
 });
 
 app.post('/api/tours', isAdmin, upload.single('image'), async (req, res) => {
     try {
-        const { title, price, duration, description, itinerary } = req.body;
-        let imageUrl = req.file ? 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg' : null;
+        const { title, price, duration, description, itinerary, imageUrl } = req.body;
+        let finalImageUrl = imageUrl || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg';
         
         const result = await pool.query(
             'INSERT INTO tours (title, price, duration, image, description, itinerary) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-            [title, parseInt(price), duration, imageUrl, description, itinerary]
+            [title, parseInt(price), duration, finalImageUrl, description, itinerary]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -90,10 +90,10 @@ app.post('/api/tours', isAdmin, upload.single('image'), async (req, res) => {
 
 app.put('/api/tours/:id', isAdmin, async (req, res) => {
     try {
-        const { title, price, duration, description, itinerary } = req.body;
+        const { title, price, duration, description, itinerary, imageUrl } = req.body;
         const result = await pool.query(
-            'UPDATE tours SET title=$1, price=$2, duration=$3, description=$4, itinerary=$5 WHERE id=$6 RETURNING *',
-            [title, parseInt(price), duration, description, itinerary, req.params.id]
+            'UPDATE tours SET title=$1, price=$2, duration=$3, image=$4, description=$5, itinerary=$6 WHERE id=$7 RETURNING *',
+            [title, parseInt(price), duration, imageUrl, description, itinerary, req.params.id]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -119,20 +119,20 @@ app.get('/api/villas', async (req, res) => {
 app.get('/api/villas/:id', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM villas WHERE id = $1', [req.params.id]);
-        res.json(result.rows[0] || {});
+        res.json(result.rows[0] || null);
     } catch (err) {
-        res.json({});
+        res.json(null);
     }
 });
 
-app.post('/api/villas', isAdmin, upload.single('image'), async (req, res) => {
+app.post('/api/villas', isAdmin, async (req, res) => {
     try {
-        const { name, price, location, facilities, description } = req.body;
-        let imageUrl = req.file ? 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg' : null;
+        const { name, price, location, facilities, description, imageUrl } = req.body;
+        const finalImageUrl = imageUrl || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg';
         
         const result = await pool.query(
             'INSERT INTO villas (name, price, location, image, facilities, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-            [name, parseInt(price), location, imageUrl, facilities, description]
+            [name, parseInt(price), location, finalImageUrl, facilities, description]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -142,10 +142,10 @@ app.post('/api/villas', isAdmin, upload.single('image'), async (req, res) => {
 
 app.put('/api/villas/:id', isAdmin, async (req, res) => {
     try {
-        const { name, price, location, facilities, description } = req.body;
+        const { name, price, location, facilities, description, imageUrl } = req.body;
         const result = await pool.query(
-            'UPDATE villas SET name=$1, price=$2, location=$3, facilities=$4, description=$5 WHERE id=$6 RETURNING *',
-            [name, parseInt(price), location, facilities, description, req.params.id]
+            'UPDATE villas SET name=$1, price=$2, location=$3, image=$4, facilities=$5, description=$6 WHERE id=$7 RETURNING *',
+            [name, parseInt(price), location, imageUrl, facilities, description, req.params.id]
         );
         res.json(result.rows[0]);
     } catch (err) {

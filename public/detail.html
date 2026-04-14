@@ -15,8 +15,8 @@
         <div class="logo">Wanderly</div>
         <div class="nav-links">
             <a href="/index.html">Home</a>
-            <a href="/tour.html">Tour</a>
-            <a href="/villa.html">Villa</a>
+            <a href="/tour.html">Tours</a>
+            <a href="/villa.html">Villas</a>
             <a href="/admin.html" class="btn-admin">Admin</a>
         </div>
     </div>
@@ -24,14 +24,16 @@
 
 <main>
     <div class="container section">
-        <div id="detail-content" style="max-width:800px; margin:0 auto;">
+        <div id="detailContent" style="max-width: 900px; margin: 0 auto;">
             <div class="spinner"></div>
         </div>
     </div>
 </main>
 
 <footer>
-    <div class="container">© 2025 Wanderly — Premium Travel Booking</div>
+    <div class="container footer-content">
+        <p>© 2024 Wanderly — Premium Travel Booking</p>
+    </div>
 </footer>
 
 <a href="https://wa.me/6281234567890" class="float-wa" target="_blank">
@@ -47,34 +49,75 @@
         try {
             const res = await fetch(`/api/${type}s/${id}`);
             const item = await res.json();
-            const container = document.getElementById('detail-content');
+            const container = document.getElementById('detailContent');
+            
+            if (!item) {
+                container.innerHTML = '<p style="text-align:center">Data tidak ditemukan</p>';
+                return;
+            }
             
             if (type === 'tour') {
                 container.innerHTML = `
-                    <img src="${item.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" style="width:100%; border-radius:24px; margin-bottom:24px;">
-                    <h1>${item.title}</h1>
-                    <p class="card-price" style="font-size:1.8rem;">Rp ${new Intl.NumberFormat('id-ID').format(item.price)}</p>
-                    <p><i class="far fa-clock"></i> ${item.duration || '3D2N'}</p>
-                    <div style="margin:24px 0"><h3>📝 Deskripsi</h3><p>${item.description || 'Paket wisata eksklusif.'}</p></div>
-                    <div style="margin:24px 0"><h3>📅 Itinerary</h3><p style="white-space:pre-line">${item.itinerary || 'Day 1: Tiba\nDay 2: Tour\nDay 3: Pulang'}</p></div>
-                    <a href="https://wa.me/6281234567890?text=Saya%20ingin%20booking%20tour%20${encodeURIComponent(item.title)}" class="btn-primary" target="_blank">📲 Book via WhatsApp</a>
+                    <img src="${item.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" style="width:100%; border-radius:32px; margin-bottom:32px;">
+                    <h1 style="font-size:2.5rem; margin-bottom:16px;">${escapeHtml(item.title)}</h1>
+                    <div style="display:flex; gap:24px; align-items:center; margin-bottom:32px; flex-wrap:wrap;">
+                        <div class="card-price" style="font-size:2rem;">Rp ${new Intl.NumberFormat('id-ID').format(item.price)}</div>
+                        <div><i class="far fa-clock"></i> ${item.duration || '3D2N'}</div>
+                    </div>
+                    <div style="margin: 32px 0;">
+                        <h3 style="font-size:1.5rem; margin-bottom:16px;">📝 Deskripsi</h3>
+                        <p style="line-height:1.8;">${escapeHtml(item.description || 'Paket wisata eksklusif dengan pengalaman tak terlupakan.')}</p>
+                    </div>
+                    <div style="margin: 32px 0;">
+                        <h3 style="font-size:1.5rem; margin-bottom:16px;">📅 Itinerary</h3>
+                        <div style="background:#f8fafc; padding:24px; border-radius:24px; line-height:1.8;">
+                            ${escapeHtml(item.itinerary || 'Day 1: Tiba & city tour\nDay 2: Snorkeling & beach\nDay 3: Free & easy\nDay 4: Pulang').replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                    <a href="https://wa.me/6281234567890?text=Saya%20ingin%20booking%20tour%20${encodeURIComponent(item.title)}" class="btn-primary" target="_blank" style="display:inline-block; margin-top:20px;">
+                        📲 Book via WhatsApp
+                    </a>
                 `;
             } else {
                 container.innerHTML = `
-                    <img src="${item.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" style="width:100%; border-radius:24px; margin-bottom:24px;">
-                    <h1>${item.name}</h1>
-                    <p class="card-price" style="font-size:1.8rem;">Rp ${new Intl.NumberFormat('id-ID').format(item.price)}/malam</p>
-                    <p><i class="fas fa-map-marker-alt"></i> ${item.location || 'Bali'}</p>
-                    <div style="margin:24px 0"><h3>📝 Deskripsi</h3><p>${item.description || 'Villa mewah dengan fasilitas lengkap.'}</p></div>
-                    <div style="margin:24px 0"><h3>✨ Fasilitas</h3><p>${item.facilities || 'Private pool, AC, WiFi, Breakfast'}</p></div>
-                    <a href="https://wa.me/6281234567890?text=Saya%20ingin%20booking%20villa%20${encodeURIComponent(item.name)}" class="btn-primary" target="_blank">🏡 Book via WhatsApp</a>
+                    <img src="${item.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" style="width:100%; border-radius:32px; margin-bottom:32px;">
+                    <h1 style="font-size:2.5rem; margin-bottom:16px;">${escapeHtml(item.name)}</h1>
+                    <div style="display:flex; gap:24px; align-items:center; margin-bottom:32px; flex-wrap:wrap;">
+                        <div class="card-price" style="font-size:2rem;">Rp ${new Intl.NumberFormat('id-ID').format(item.price)}<span style="font-size:1rem;">/malam</span></div>
+                        <div><i class="fas fa-map-marker-alt"></i> ${escapeHtml(item.location || 'Bali, Indonesia')}</div>
+                    </div>
+                    <div style="margin: 32px 0;">
+                        <h3 style="font-size:1.5rem; margin-bottom:16px;">📝 Deskripsi</h3>
+                        <p style="line-height:1.8;">${escapeHtml(item.description || 'Villa mewah dengan fasilitas lengkap dan pemandangan indah.')}</p>
+                    </div>
+                    <div style="margin: 32px 0;">
+                        <h3 style="font-size:1.5rem; margin-bottom:16px;">✨ Fasilitas</h3>
+                        <div style="background:#f8fafc; padding:24px; border-radius:24px; display:flex; flex-wrap:wrap; gap:12px;">
+                            ${(item.facilities || 'Private pool, AC, Wi-Fi, Breakfast, TV, Kitchen').split(',').map(f => `<span style="background:white; padding:8px 16px; border-radius:40px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">✓ ${f.trim()}</span>`).join('')}
+                        </div>
+                    </div>
+                    <a href="https://wa.me/6281234567890?text=Saya%20ingin%20booking%20villa%20${encodeURIComponent(item.name)}" class="btn-primary" target="_blank" style="display:inline-block; margin-top:20px;">
+                        🏡 Book via WhatsApp
+                    </a>
                 `;
             }
         } catch(e) {
-            document.getElementById('detail-content').innerHTML = '<p>Gagal memuat data</p>';
+            document.getElementById('detailContent').innerHTML = '<p style="text-align:center">Gagal memuat data</p>';
         }
     }
-    if (type && id) loadDetail();
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    if (type && id) {
+        loadDetail();
+    } else {
+        document.getElementById('detailContent').innerHTML = '<p style="text-align:center">Parameter tidak valid</p>';
+    }
 </script>
 </body>
 </html>

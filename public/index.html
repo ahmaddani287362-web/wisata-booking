@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wanderly - Tour & Villa Booking</title>
+    <title>Wanderly - Premium Tour & Villa Booking</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
@@ -15,8 +15,8 @@
         <div class="logo">Wanderly</div>
         <div class="nav-links">
             <a href="/index.html" class="active">Home</a>
-            <a href="/tour.html">Tour</a>
-            <a href="/villa.html">Villa</a>
+            <a href="/tour.html">Tours</a>
+            <a href="/villa.html">Villas</a>
             <a href="/admin.html" class="btn-admin">Admin</a>
         </div>
     </div>
@@ -24,44 +24,66 @@
 
 <main>
     <div class="hero">
-        <div class="container" style="text-align:center;">
-            <h1>Discover Your Next Escape</h1>
-            <p>Luxury tours & private villas — curated just for you.</p>
+        <div class="hero-content">
+            <h1>Discover Your<br>Next Escape</h1>
+            <p>Luxury tours & private villas — curated just for you</p>
             <a href="/tour.html" class="btn-primary">Explore Now →</a>
         </div>
     </div>
 
     <div class="container section">
-        <h2 class="section-title">✨ Featured Tours</h2>
-        <div class="grid" id="featured-tours">
+        <h2 class="section-title">Featured Tours</h2>
+        <div class="grid" id="featuredTours">
             <div class="spinner"></div>
         </div>
     </div>
 
     <div class="container section">
-        <h2 class="section-title">🏝️ Featured Villas</h2>
-        <div class="grid" id="featured-villas">
+        <h2 class="section-title">Featured Villas</h2>
+        <div class="grid" id="featuredVillas">
             <div class="spinner"></div>
         </div>
     </div>
 
     <div class="container">
         <div class="testimonial-grid">
-            <div class="testi-card">⭐ "Villa super nyaman, view amazing!" - Amanda</div>
-            <div class="testi-card">⭐ "Tour Raja Ampat tak terlupakan!" - Rizky</div>
-            <div class="testi-card">⭐ "Booking mudah via WA, respon cepat!" - Sarah</div>
+            <div class="testi-card">
+                                <i class="fas fa-star" style="color:#f59e0b; margin-bottom:16px; display:block; font-size:24px;"></i>
+                <p class="testi-text">"Pengalaman menginap di Villa Cemara sangat luar biasa! Pelayanan terbaik, view laut amazing. Recommended banget!"</p>
+                <p class="testi-name">— Amanda Wijaya, Jakarta</p>
+            </div>
+            <div class="testi-card">
+                <i class="fas fa-star" style="color:#f59e0b; margin-bottom:16px; display:block; font-size:24px;"></i>
+                <p class="testi-text">"Tour Raja Ampat benar-benar surga dunia. Guide profesional, akomodasi nyaman. Akan kembali lagi!"</p>
+                <p class="testi-name">— Rizky Pratama, Surabaya</p>
+            </div>
+            <div class="testi-card">
+                <i class="fas fa-star" style="color:#f59e0b; margin-bottom:16px; display:block; font-size:24px;"></i>
+                <p class="testi-text">"Booking sangat mudah via WhatsApp, respon cepat. Villa bersih dan fasilitas lengkap. Value for money!"</p>
+                <p class="testi-name">— Sarah Aurelia, Bandung</p>
+            </div>
         </div>
     </div>
 
     <div class="container cta-wa">
-        <h2>Ready for an adventure?</h2>
-        <p>Hubungi kami langsung untuk reservasi terbaik.</p>
-        <a href="https://wa.me/6281234567890?text=Saya%20ingin%20booking" class="btn-primary" style="background:white; color:#075E54;">Chat via WhatsApp →</a>
+        <h2>Ready for an Adventure?</h2>
+        <p>Hubungi kami sekarang untuk reservasi terbaik dan penawaran spesial</p>
+        <a href="https://wa.me/6281234567890?text=Saya%20ingin%20booking%20paket%20wisata" class="btn-secondary" style="background:white; color:#075E54;">Chat via WhatsApp →</a>
     </div>
 </main>
 
 <footer>
-    <div class="container">© 2025 Wanderly — Premium Travel Booking</div>
+    <div class="container footer-content">
+        <h3>Wanderly</h3>
+        <p>Experience the best escapes with us</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p style="margin-top: 32px;">© 2024 Wanderly — Premium Travel Booking</p>
+    </div>
 </footer>
 
 <a href="https://wa.me/6281234567890?text=Saya%20ingin%20booking" class="float-wa" target="_blank">
@@ -73,7 +95,7 @@
         try {
             const res = await fetch('/api/tours');
             const tours = await res.json();
-            const container = document.getElementById('featured-tours');
+            const container = document.getElementById('featuredTours');
             if (!tours.length) {
                 container.innerHTML = '<p style="text-align:center">Belum ada data tour</p>';
                 return;
@@ -82,9 +104,9 @@
                 <div class="card" onclick="location.href='/detail.html?type=tour&id=${tour.id}'">
                     <img class="card-img" src="${tour.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" alt="${tour.title}">
                     <div class="card-content">
-                        <div class="card-title">${tour.title}</div>
+                        <div class="card-title">${escapeHtml(tour.title)}</div>
                         <div class="card-price">Rp ${new Intl.NumberFormat('id-ID').format(tour.price)}</div>
-                        <div>${tour.duration || '3D2N'}</div>
+                        <div class="card-detail"><i class="far fa-clock"></i> ${tour.duration || '3D2N'}</div>
                     </div>
                 </div>
             `).join('');
@@ -95,7 +117,7 @@
         try {
             const res = await fetch('/api/villas');
             const villas = await res.json();
-            const container = document.getElementById('featured-villas');
+            const container = document.getElementById('featuredVillas');
             if (!villas.length) {
                 container.innerHTML = '<p style="text-align:center">Belum ada data villa</p>';
                 return;
@@ -104,13 +126,20 @@
                 <div class="card" onclick="location.href='/detail.html?type=villa&id=${villa.id}'">
                     <img class="card-img" src="${villa.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" alt="${villa.name}">
                     <div class="card-content">
-                        <div class="card-title">${villa.name}</div>
-                        <div class="card-price">Rp ${new Intl.NumberFormat('id-ID').format(villa.price)}/malam</div>
-                        <div>${villa.location || 'Bali'}</div>
+                        <div class="card-title">${escapeHtml(villa.name)}</div>
+                        <div class="card-price">Rp ${new Intl.NumberFormat('id-ID').format(villa.price)}<span style="font-size:0.9rem;">/malam</span></div>
+                        <div class="card-detail"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(villa.location || 'Bali')}</div>
                     </div>
                 </div>
             `).join('');
         } catch(e) { console.error(e); }
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     loadFeaturedTours();
