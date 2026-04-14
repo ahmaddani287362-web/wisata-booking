@@ -3,660 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Wanderly CMS</title>
+    <title>Admin Panel Premium - Wanderly</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f1f5f9;
-            color: #0f172a;
-        }
-
-        /* Admin Layout */
-        .admin-wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Premium */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            transition: all 0.3s;
-        }
-
-        .sidebar-header {
-            padding: 28px 24px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #14b8a6, #0f766e);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .sidebar-header p {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            margin-top: 8px;
-        }
-
-        .nav-menu {
-            padding: 24px 16px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            margin: 4px 0;
-            border-radius: 12px;
-            color: #cbd5e1;
-            text-decoration: none;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .nav-item:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .nav-item.active {
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            color: white;
-            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
-        }
-
-        .nav-item i {
-            width: 24px;
-            font-size: 1.2rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 24px 32px;
-        }
-
-        /* Top Bar */
-        .top-bar {
-            background: white;
-            border-radius: 20px;
-            padding: 16px 24px;
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .admin-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logout-btn {
-            background: #ef4444;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .logout-btn:hover {
-            background: #dc2626;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-        }
-
-        .stat-info h3 {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #0f766e;
-        }
-
-        .stat-info p {
-            color: #64748b;
-            margin-top: 4px;
-        }
-
-        .stat-icon {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #0f766e20, #14b8a620);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: #0f766e;
-        }
-
-        /* Form Cards */
-        .form-card {
-            background: white;
-            border-radius: 28px;
-            padding: 32px;
-            margin-bottom: 40px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .form-card h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group.full-width {
-            grid-column: span 2;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #334155;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            padding: 14px 16px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #0f766e;
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        /* Tables */
-        .table-wrapper {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .table-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .table-header h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .data-table th {
-            text-align: left;
-            padding: 16px 20px;
-            background: #f8fafc;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #475569;
-        }
-
-        .data-table td {
-            padding: 16px 20px;
-            border-bottom: 1px solid #f1f5f9;
-            vertical-align: middle;
-        }
-
-        .data-table tr:hover {
-            background: #f8fafc;
-        }
-
-        .table-image {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            object-fit: cover;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-edit {
-            background: #f59e0b;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .btn-delete {
-            background: #ef4444;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .btn-edit:hover, .btn-delete:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            color: white;
-            padding: 14px 28px;
-            border-radius: 40px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
-        }
-
-        .btn-secondary {
-            background: #f1f5f9;
-            color: #334155;
-            padding: 12px 24px;
-            border-radius: 40px;
-            border: none;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 32px;
-            padding: 32px;
-            max-width: 550px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .modal-content h3 {
-            font-size: 1.4rem;
-            margin-bottom: 24px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 16px;
-            margin-top: 24px;
-            justify-content: flex-end;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 14px 24px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 500;
-            z-index: 1100;
-            animation: slideIn 0.3s ease;
-        }
-
-        .toast.success { background: #10b981; }
-        .toast.error { background: #ef4444; }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #e2e8f0;
-            border-top-color: #0f766e;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 40px auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-        }
-
-        .login-card {
-            background: white;
-            padding: 48px;
-            border-radius: 32px;
-            width: 420px;
-            text-align: center;
-        }
-
-        .login-card h2 {
-            margin-bottom: 32px;
-            color: #0f172a;
-        }
-
-        .login-card input {
-            width: 100%;
-            padding: 14px;
-            margin: 12px 0;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 16px;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                position: fixed;
-                z-index: 1000;
-            }
-            .main-content {
-                margin-left: 0;
-                padding: 16px;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .form-group.full-width {
-                grid-column: span 1;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<!-- Login Form -->
-<div id="loginContainer" class="login-container">
-    <div class="login-card">
-        <h2>🔐 Admin Login</h2>
-        <input type="text" id="username" placeholder="Username" value="admin">
-        <input type="password" id="password" placeholder="Password" value="admin123">
-        <button class="btn-primary" onclick="login()" style="width:100%">Login to Dashboard</button>
-    </div>
-</div>
-
-<!-- Admin Dashboard -->
-<div id="dashboard" style="display:none;">
-    <div class="admin-wrapper">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>Wanderly CMS</h2>
-                <p>Content Management System</p>
-            </div>
-            <div class="nav-menu">
-                <div class="nav-item active" onclick="showSection('dashboard')">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </div>
-                <div class="nav-item" onclick="showSection('tours')">
-                    <i class="fas fa-umbrella-beach"></i>
-                    <span>Tour Packages</span>
-                </div>
-                <div class="nav-item" onclick="showSection('villas')">
-                    <i class="fas fa-home"></i>
-                    <span>Villas</span>
-                </div>
-                <div class="nav-item" onclick="showSection('addTour')">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Add New Tour</span>
-                </div>
-                <div class="nav-item" onclick="showSection('addVilla')">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Add New Villa</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="top-bar">
-                <h1 class="page-title" id="currentPageTitle">Dashboard</h1>
-                <div class="admin-info">
-                    <span>👋 Admin</span>
-                    <a href="#" class="logout-btn" onclick="logout()">Logout</a>
-                </div>
-            </div>
-
-            <!-- Dashboard Section -->
-            <div id="dashboardSection">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-info">
-                            <h3 id="totalTours">0</h3>
-                            <p>Total Tours</p>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-umbrella-beach"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-info">
-                            <h3 id="totalVillas">0</h3>
-                            <p>Total Villas</p>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-home"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tours Section -->
-            <div id="toursSection" style="display:none;">
-                <div class="table-wrapper">
-                    <div class="table-header">
-                        <h3><i class="fas fa-umbrella-beach"></i> All Tour Packages</h3>
-                    </div>
-                    <div id="toursTable" style="overflow-x: auto;">
-                        <div class="spinner"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Villas Section -->
-            <div id="villasSection" style="display:none;">
-                <div class="table-wrapper">
-                    <div class="table-header">
-                        <h3><i class="fas fa-home"></i> All Villas</h3>
-                    </div>
-                    <div id="villasTable" style="overflow-x: auto;">
-                        <div class="spinner"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Add Tour Section -->
-            <div id="addTourSection" style="display:none;">
-                <div class="form-card">
-                    <h3><i class="fas fa-plus-circle"></i> Add New Tour Package</h3>
-                    <form id="addTourForm">
-                        <div class="form-grid">
-                            <div class="form-group full-width">
-                                <label>Tour Title *</label>
-                                <input type="text" name="title" placeholder="e.g., Bali Paradise Explorer" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Price (Rp) *</label>
-                                <input type="number" name="price" placeholder="2500000" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Duration</label>
-                                <input type="text" name="duration" placeholder="e.g., 4D3N">
-                            </div>
-                            <div class="form-group full-width">
-                                <label>Image URL</label>
-                                <input type="text" name="imageUrl" placeholder="https://...">
-                            </div>
-                            <div class="form-group full-width">
-                                <label>Description</label>
-                                <textarea name="description" placeholder="Describe the tour package..."></textarea>
-                            </div>
-                            <div class="form-group full-width">
-                                <label>Itinerary</label>
-                                <textarea name="itinerary" placeholder="Day 1: ...&#10;Day 2: ...&#10;Day 3: ..."></textarea>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-primary" style="margin-top: 24px;">+ Publish Tour</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Add Villa Section -->
-            <div id="addVillaSection" style="display:none;">
-                <div class="form-card">
-                    <h3><i class="fas fa-plus-circle"></i> Add New Villa</h3>
-                    <form id="addVillaForm">
-                        <div class="form-grid">
-                            <div class="form-group full-width">
-                                <label>Villa Name *</label>
-                                <input type="text" name="name" placeholder="e.g., Villa Cemara" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Price per Night (Rp) *</label>
-                                <input type="number" name="price" placeholder="1800000" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Location</label>
-                                <input type="text" name="location" placeholder="e.g., Seminyak, Bali">
-                            </div>
-                            <div class="form-group full-width">
-                                <label>Image URL</label>
-                                <input type="text" name="imageUrl" placeholder="https://...">
-                            </div>
-                            <div class="form-group full-width">
-                                <label>Description</label>
-                                <textarea name="description" placeholder="Describe the villa..."></textarea>
-                            </div>
-                            <div class="form-group full-width">
-                                <label>Facilities</label>
-                                <textarea name="facilities" placeholder="Private pool, AC, WiFi, Breakfast, ..."></textarea>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-primary" style="margin-top: 24px;">+ Publish Villa</button>
-                    </form>
-                </div>
-            </div>
+<div class="navbar">
+    <div class="nav-container">
+        <div class="logo">Wanderly Admin</div>
+        <div class="nav-links">
+            <a href="/index.html">Home</a>
+            <a href="#" onclick="logout()" class="btn-admin">Logout</a>
         </div>
     </div>
 </div>
 
-<!-- Edit Modal -->
+<main>
+    <div class="container section">
+        <!-- Login Form -->
+        <div id="loginForm" class="admin-login">
+            <h2>🔐 Admin Login</h2>
+            <input type="text" id="username" placeholder="Username" value="admin">
+            <input type="password" id="password" placeholder="Password" value="admin123">
+            <button class="btn-primary" onclick="login()" style="width:100%">Login</button>
+        </div>
+        
+        <!-- Admin Panel -->
+        <div id="adminPanel" style="display:none;">
+            <!-- Stats Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 40px;">
+                <div style="background: linear-gradient(135deg, #0f766e, #14b8a6); padding: 24px; border-radius: 24px; color: white;">
+                    <h3 style="font-size: 2rem;" id="tourCount">0</h3>
+                    <p>Total Tours</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #0f766e, #14b8a6); padding: 24px; border-radius: 24px; color: white;">
+                    <h3 style="font-size: 2rem;" id="villaCount">0</h3>
+                    <p>Total Villas</p>
+                </div>
+            </div>
+            
+            <!-- Add Tour Form -->
+            <div class="admin-section">
+                <h2>➕ Tambah Tour Baru</h2>
+                <form id="addTourForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <input type="text" name="title" placeholder="Nama Tour" required style="grid-column: span 2;">
+                    <input type="number" name="price" placeholder="Harga (Rp)" required>
+                    <input type="text" name="duration" placeholder="Durasi (4D3N)">
+                    <input type="text" name="imageUrl" placeholder="URL Gambar (opsional)" style="grid-column: span 2;">
+                    <textarea name="description" placeholder="Deskripsi" style="grid-column: span 2;" rows="3"></textarea>
+                    <textarea name="itinerary" placeholder="Itinerary (pisahkan dengan newline)" style="grid-column: span 2;" rows="4"></textarea>
+                    <button type="submit" class="btn-primary" style="grid-column: span 2;">Simpan Tour</button>
+                </form>
+            </div>
+            
+            <!-- Add Villa Form -->
+            <div class="admin-section">
+                <h2>🏡 Tambah Villa Baru</h2>
+                <form id="addVillaForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <input type="text" name="name" placeholder="Nama Villa" required style="grid-column: span 2;">
+                    <input type="number" name="price" placeholder="Harga per malam (Rp)" required>
+                    <input type="text" name="location" placeholder="Lokasi">
+                    <input type="text" name="imageUrl" placeholder="URL Gambar (opsional)" style="grid-column: span 2;">
+                    <textarea name="description" placeholder="Deskripsi" style="grid-column: span 2;" rows="3"></textarea>
+                    <textarea name="facilities" placeholder="Fasilitas (pisahkan dengan koma)" style="grid-column: span 2;" rows="3"></textarea>
+                    <button type="submit" class="btn-primary" style="grid-column: span 2;">Simpan Villa</button>
+                </form>
+            </div>
+            
+            <!-- Tours Table -->
+            <div class="admin-section">
+                <h2>📋 Data Tours</h2>
+                <div id="toursTable" class="admin-table"></div>
+            </div>
+            
+            <!-- Villas Table -->
+            <div class="admin-section">
+                <h2>📋 Data Villas</h2>
+                <div id="villasTable" class="admin-table"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal Edit -->
 <div id="editModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">✏️ Edit Data</h3>
@@ -665,21 +96,21 @@
             <input type="hidden" id="editType">
             <div id="editFields"></div>
             <div class="modal-buttons">
-                <button type="submit" class="btn-primary">Save Changes</button>
-                <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Simpan Perubahan</button>
+                <button type="button" class="btn-outline" onclick="closeModal()">Batal</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Delete Modal -->
+<!-- Modal Delete Confirm -->
 <div id="deleteModal" class="modal">
     <div class="modal-content" style="max-width: 400px; text-align: center;">
-        <h3>⚠️ Confirm Delete</h3>
-        <p style="margin: 20px 0;">Are you sure you want to delete this item? This action cannot be undone.</p>
+        <h3>⚠️ Konfirmasi Hapus</h3>
+        <p style="margin: 20px 0;">Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.</p>
         <div class="modal-buttons" style="justify-content: center;">
-            <button class="btn-delete" id="confirmDeleteBtn">Yes, Delete</button>
-            <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn-danger" id="confirmDeleteBtn">Ya, Hapus</button>
+            <button class="btn-outline" onclick="closeDeleteModal()">Batal</button>
         </div>
     </div>
 </div>
@@ -687,7 +118,7 @@
 <script>
     let pendingDeleteId = null;
     let pendingDeleteType = null;
-
+    
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
@@ -695,7 +126,7 @@
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
     }
-
+    
     async function login() {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
@@ -705,126 +136,113 @@
             body: JSON.stringify({ username, password })
         });
         if (res.ok) {
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            showToast('Welcome back, Admin!');
-            loadDashboard();
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            showToast('Login berhasil! Selamat datang Admin');
+            loadAllData();
         } else {
-            showToast('Invalid credentials', 'error');
+            showToast('Login gagal! Periksa username dan password', 'error');
         }
     }
-
+    
     async function logout() {
         await fetch('/api/admin/logout', { method: 'POST' });
-        location.reload();
+        showToast('Logout berhasil');
+        setTimeout(() => location.reload(), 1000);
     }
-
-    function showSection(section) {
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        event.target.closest('.nav-item').classList.add('active');
-        
-        document.getElementById('dashboardSection').style.display = 'none';
-        document.getElementById('toursSection').style.display = 'none';
-        document.getElementById('villasSection').style.display = 'none';
-        document.getElementById('addTourSection').style.display = 'none';
-        document.getElementById('addVillaSection').style.display = 'none';
-        
-        if (section === 'dashboard') {
-            document.getElementById('dashboardSection').style.display = 'block';
-            document.getElementById('currentPageTitle').innerText = 'Dashboard';
-            loadDashboard();
-        } else if (section === 'tours') {
-            document.getElementById('toursSection').style.display = 'block';
-            document.getElementById('currentPageTitle').innerText = 'Tour Packages';
-            loadTours();
-        } else if (section === 'villas') {
-            document.getElementById('villasSection').style.display = 'block';
-            document.getElementById('currentPageTitle').innerText = 'Villas';
-            loadVillas();
-        } else if (section === 'addTour') {
-            document.getElementById('addTourSection').style.display = 'block';
-            document.getElementById('currentPageTitle').innerText = 'Add New Tour';
-        } else if (section === 'addVilla') {
-            document.getElementById('addVillaSection').style.display = 'block';
-            document.getElementById('currentPageTitle').innerText = 'Add New Villa';
-        }
+    
+    async function loadAllData() {
+        await loadTours();
+        await loadVillas();
     }
-
-    async function loadDashboard() {
-        const toursRes = await fetch('/api/tours');
-        const tours = await toursRes.json();
-        const villasRes = await fetch('/api/villas');
-        const villas = await villasRes.json();
-        document.getElementById('totalTours').innerText = tours.length;
-        document.getElementById('totalVillas').innerText = villas.length;
-    }
-
+    
     async function loadTours() {
         const res = await fetch('/api/tours');
         const tours = await res.json();
-        const container = document.getElementById('toursTable');
+        document.getElementById('tourCount').innerText = tours.length;
         if (!tours.length) {
-            container.innerHTML = '<p style="text-align:center; padding:40px;">No tour data available</p>';
+            document.getElementById('toursTable').innerHTML = '<p style="text-align:center; padding:40px;">Belum ada data tour</p>';
             return;
         }
-        container.innerHTML = `
-            <table class="data-table">
+        document.getElementById('toursTable').innerHTML = `
+            <table>
                 <thead>
-                    <tr><th>ID</th><th>Image</th><th>Title</th><th>Price</th><th>Duration</th><th>Actions</th></tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Gambar</th>
+                        <th>Nama</th>
+                        <th>Harga</th>
+                        <th>Durasi</th>
+                        <th>Aksi</th>
+                    </tr>
                 </thead>
                 <tbody>
                     ${tours.map(t => `
                         <tr>
                             <td>${t.id}</td>
-                            <td><img class="table-image" src="${t.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}"></td>
+                            <td><img src="${t.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" width="50" height="50" style="border-radius:12px; object-fit:cover;"></td>
                             <td><strong>${escapeHtml(t.title)}</strong></td>
                             <td>Rp ${new Intl.NumberFormat('id-ID').format(t.price)}</td>
                             <td>${t.duration || '-'}</td>
                             <td>
-                                <div class="action-buttons">
-                                    <button class="btn-edit" onclick="openEditModal('tour', ${t.id})">Edit</button>
-                                    <button class="btn-delete" onclick="confirmDelete('tour', ${t.id})">Delete</button>
-                                </div>
-                             </td>
-                         </tr>
+                                <button class="btn-warning" onclick="openEditModal('tour', ${t.id})" style="padding:8px 16px; margin:0 4px;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-danger" onclick="confirmDelete('tour', ${t.id})" style="padding:8px 16px; margin:0 4px;">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
                     `).join('')}
                 </tbody>
             </table>
         `;
     }
-
+    
     async function loadVillas() {
         const res = await fetch('/api/villas');
         const villas = await res.json();
-        const container = document.getElementById('villasTable');
+        document.getElementById('villaCount').innerText = villas.length;
         if (!villas.length) {
-            container.innerHTML = '<p style="text-align:center; padding:40px;">No villa data available</p>';
+            document.getElementById('villasTable').innerHTML = '<p style="text-align:center; padding:40px;">Belum ada data villa</p>';
             return;
         }
-        container.innerHTML = `
-            <table class="data-table">
-                <thead><tr><th>ID</th><th>Image</th><th>Name</th><th>Price</th><th>Location</th><th>Actions</th></tr></thead>
+        document.getElementById('villasTable').innerHTML = `
+            <table style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Gambar</th>
+                        <th>Nama</th>
+                        <th>Harga</th>
+                        <th>Lokasi</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
                 <tbody>
                     ${villas.map(v => `
                         <tr>
                             <td>${v.id}</td>
-                            <td><img class="table-image" src="${v.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}"></td>
+                            <td><img src="${v.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" width="50" height="50" style="border-radius:12px; object-fit:cover;"></td>
                             <td><strong>${escapeHtml(v.name)}</strong></td>
-                            <td>Rp ${new Intl.NumberFormat('id-ID').format(v.price)}/night</td>
+                            <td>Rp ${new Intl.NumberFormat('id-ID').format(v.price)}/malam</td>
                             <td>${escapeHtml(v.location) || '-'}</td>
                             <td>
-                                <div class="action-buttons">
-                                    <button class="btn-edit" onclick="openEditModal('villa', ${v.id})">Edit</button>
-                                    <button class="btn-delete" onclick="confirmDelete('villa', ${v.id})">Delete</button>
-                                </div>
-                             </td>
-                         </tr>
+                                <button class="btn-warning" onclick="openEditModal('villa', ${v.id})" style="padding:8px 16px; margin:0 4px;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-danger" onclick="confirmDelete('villa', ${v.id})" style="padding:8px 16px; margin:0 4px;">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
                     `).join('')}
                 </tbody>
             </table>
         `;
     }
-
+    
+    // Add Tour Form
     document.getElementById('addTourForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -842,14 +260,15 @@
             body: JSON.stringify(data)
         });
         if (res.ok) {
-            showToast('Tour added successfully!');
-            e.target.reset();
+            showToast('Tour berhasil ditambahkan!');
             loadTours();
+            e.target.reset();
         } else {
-            showToast('Failed to add tour', 'error');
+            showToast('Gagal menambahkan tour', 'error');
         }
     });
-
+    
+    // Add Villa Form
     document.getElementById('addVillaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -867,17 +286,19 @@
             body: JSON.stringify(data)
         });
         if (res.ok) {
-            showToast('Villa added successfully!');
-            e.target.reset();
+            showToast('Villa berhasil ditambahkan!');
             loadVillas();
+            e.target.reset();
         } else {
-            showToast('Failed to add villa', 'error');
+            showToast('Gagal menambahkan villa', 'error');
         }
     });
-
+    
+    // Open Edit Modal
     async function openEditModal(type, id) {
         const res = await fetch(`/api/${type}s/${id}`);
         const item = await res.json();
+        
         document.getElementById('editId').value = id;
         document.getElementById('editType').value = type;
         document.getElementById('modalTitle').innerHTML = type === 'tour' ? '✏️ Edit Tour' : '✏️ Edit Villa';
@@ -885,31 +306,34 @@
         let fieldsHtml = '';
         if (type === 'tour') {
             fieldsHtml = `
-                <div class="form-group full-width"><label>Title</label><input type="text" id="editTitle" value="${escapeHtml(item.title)}" required></div>
-                <div class="form-group"><label>Price</label><input type="number" id="editPrice" value="${item.price}" required></div>
-                <div class="form-group"><label>Duration</label><input type="text" id="editDuration" value="${item.duration || ''}"></div>
-                <div class="form-group full-width"><label>Image URL</label><input type="text" id="editImageUrl" value="${item.image || ''}"></div>
-                <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description || '')}</textarea></div>
-                <div class="form-group full-width"><label>Itinerary</label><textarea id="editItinerary" rows="4">${escapeHtml(item.itinerary || '')}</textarea></div>
+                <input type="text" id="editTitle" value="${escapeHtml(item.title)}" placeholder="Nama Tour" required>
+                <input type="number" id="editPrice" value="${item.price}" placeholder="Harga" required>
+                <input type="text" id="editDuration" value="${item.duration || ''}" placeholder="Durasi (4D3N)">
+                <input type="text" id="editImageUrl" value="${item.image || ''}" placeholder="URL Gambar">
+                <textarea id="editDescription" placeholder="Deskripsi" rows="3">${escapeHtml(item.description || '')}</textarea>
+                <textarea id="editItinerary" placeholder="Itinerary" rows="4">${escapeHtml(item.itinerary || '')}</textarea>
             `;
         } else {
             fieldsHtml = `
-                <div class="form-group full-width"><label>Name</label><input type="text" id="editName" value="${escapeHtml(item.name)}" required></div>
-                <div class="form-group"><label>Price</label><input type="number" id="editPrice" value="${item.price}" required></div>
-                <div class="form-group"><label>Location</label><input type="text" id="editLocation" value="${escapeHtml(item.location || '')}"></div>
-                <div class="form-group full-width"><label>Image URL</label><input type="text" id="editImageUrl" value="${item.image || ''}"></div>
-                <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description || '')}</textarea></div>
-                <div class="form-group full-width"><label>Facilities</label><textarea id="editFacilities" rows="3">${escapeHtml(item.facilities || '')}</textarea></div>
+                <input type="text" id="editName" value="${escapeHtml(item.name)}" placeholder="Nama Villa" required>
+                <input type="number" id="editPrice" value="${item.price}" placeholder="Harga per malam" required>
+                <input type="text" id="editLocation" value="${escapeHtml(item.location || '')}" placeholder="Lokasi">
+                <input type="text" id="editImageUrl" value="${item.image || ''}" placeholder="URL Gambar">
+                <textarea id="editDescription" placeholder="Deskripsi" rows="3">${escapeHtml(item.description || '')}</textarea>
+                <textarea id="editFacilities" placeholder="Fasilitas" rows="3">${escapeHtml(item.facilities || '')}</textarea>
             `;
         }
+        
         document.getElementById('editFields').innerHTML = fieldsHtml;
         document.getElementById('editModal').classList.add('active');
     }
-
+    
+    // Edit Form Submit
     document.getElementById('editForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('editId').value;
         const type = document.getElementById('editType').value;
+        
         let data = {};
         if (type === 'tour') {
             data = {
@@ -930,57 +354,66 @@
                 facilities: document.getElementById('editFacilities').value
             };
         }
+        
         const res = await fetch(`/api/${type}s/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+        
         if (res.ok) {
-            showToast('Data updated successfully!');
+            showToast('Data berhasil diupdate!');
             closeModal();
-            loadTours();
-            loadVillas();
+            loadAllData();
         } else {
-            showToast('Failed to update data', 'error');
+            showToast('Gagal mengupdate data', 'error');
         }
     });
-
+    
+    // Confirm Delete
     function confirmDelete(type, id) {
         pendingDeleteId = id;
         pendingDeleteType = type;
         document.getElementById('deleteModal').classList.add('active');
     }
-
+    
+    // Execute Delete
     document.getElementById('confirmDeleteBtn').onclick = async () => {
         if (pendingDeleteId && pendingDeleteType) {
             const res = await fetch(`/api/${pendingDeleteType}s/${pendingDeleteId}`, { method: 'DELETE' });
             if (res.ok) {
-                showToast('Data deleted successfully!');
+                showToast('Data berhasil dihapus!');
                 closeDeleteModal();
-                loadTours();
-                loadVillas();
-                loadDashboard();
+                loadAllData();
             } else {
-                showToast('Failed to delete data', 'error');
+                showToast('Gagal menghapus data', 'error');
             }
         }
     };
-
-    function closeModal() { document.getElementById('editModal').classList.remove('active'); }
-    function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); pendingDeleteId = null; }
-
+    
+    function closeModal() {
+        document.getElementById('editModal').classList.remove('active');
+    }
+    
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('active');
+        pendingDeleteId = null;
+        pendingDeleteType = null;
+    }
+    
     function escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
-
+    
+    // Check auth on load
     fetch('/api/admin/check').then(res => res.json()).then(data => {
         if (data.isAdmin) {
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            loadDashboard();
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAllData();
         }
     });
 </script>
