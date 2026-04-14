@@ -8,13 +8,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
     <style>
+        /* Additional Premium Styles */
         .detail-header {
             background: linear-gradient(135deg, #0f766e, #14b8a6);
             border-radius: 32px;
             padding: 48px;
             color: white;
             margin-bottom: 48px;
-            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .detail-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
+            z-index: 0;
+        }
+        .detail-header > * {
+            position: relative;
+            z-index: 1;
         }
         .detail-header h1 {
             font-size: 2.5rem;
@@ -31,61 +47,118 @@
         }
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            margin-bottom: 48px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
         }
         .info-card {
-            background: #f8fafc;
-            padding: 24px;
-            border-radius: 24px;
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
             text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
         }
         .info-card i {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: #0f766e;
             margin-bottom: 12px;
         }
         .info-card h4 {
-            font-size: 1rem;
+            font-size: 0.85rem;
             color: #64748b;
             margin-bottom: 8px;
         }
         .info-card p {
-            font-size: 1.2rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 600;
             color: #0f172a;
         }
-        .included-list {
-            background: #f8fafc;
+        .section-card {
+            background: white;
             border-radius: 24px;
             padding: 32px;
-            margin: 32px 0;
+            margin-bottom: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .included-list h3 {
+        .section-title-detail {
             font-size: 1.3rem;
+            font-weight: 700;
             margin-bottom: 24px;
+            color: #0f172a;
             display: flex;
             align-items: center;
             gap: 12px;
+            border-left: 4px solid #0f766e;
+            padding-left: 16px;
         }
-        .included-list ul {
-            list-style: none;
+        .included-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
         }
-        .included-list li {
+        .included-item {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 12px;
-            background: white;
+            background: #f8fafc;
+            border-radius: 16px;
+            transition: 0.2s;
+        }
+        .included-item:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+        .included-item i {
+            color: #10b981;
+            font-size: 1.1rem;
+            min-width: 20px;
+        }
+        .time-slot {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .time-slot h4 {
+            color: #0f766e;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .time-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 8px;
+        }
+        .time-list span {
+            display: block;
+            padding: 6px 0;
+            font-size: 0.9rem;
+        }
+        .itinerary-step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f8fafc;
             border-radius: 16px;
         }
-        .included-list li i {
-            color: #10b981;
-            font-size: 1.2rem;
+        .itinerary-time {
+            min-width: 100px;
+            font-weight: 700;
+            color: #0f766e;
+        }
+        .highlight-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
         }
         .booking-card {
             background: linear-gradient(135deg, #0f766e, #14b8a6);
@@ -94,10 +167,6 @@
             text-align: center;
             color: white;
             margin-top: 48px;
-        }
-        .booking-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 16px;
         }
         .booking-card .btn-wa {
             background: #25D366;
@@ -116,13 +185,29 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
         }
-        .section-title-small {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 32px 0 20px;
-            color: #0f172a;
-            border-left: 4px solid #0f766e;
-            padding-left: 16px;
+        .note-text {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            color: #92400e;
+            margin: 20px 0;
+        }
+        .terms-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .terms-list li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .terms-list li:before {
+            content: '•';
+            color: #0f766e;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
         }
         .back-button {
             display: inline-flex;
@@ -151,6 +236,12 @@
             }
             .price-tag {
                 font-size: 1.3rem;
+            }
+            .itinerary-step {
+                flex-direction: column;
+            }
+            .itinerary-time {
+                min-width: auto;
             }
         }
     </style>
@@ -192,6 +283,59 @@
     const type = urlParams.get('type');
     const id = urlParams.get('id');
 
+    // Data lengkap untuk setiap produk (bisa ditambah sesuai kebutuhan)
+    const extraDetails = {
+        // Untuk ATV Quad Bike
+        'atv': {
+            whatToBring: ['Short pants or swimsuit', 'A change of dry clothes', 'Sunscreen', 'Hat', 'Sport shoes or strapped sandals', 'Extra money'],
+            additionalInfo: [
+                'The tour is suitable for participants aged 7 – 65',
+                'Not recommended for pregnant travelers',
+                'Participants are expected to possess a moderate level of physical fitness',
+                'There are no issues with the heart or any other significant medical conditions'
+            ],
+            highlights: [
+                'Thrilling Off-Road Adventure: Ride through Ubud’s lush jungles, rice fields, and muddy trails on a powerful ATV',
+                'Scenic Ubud Landscapes: Experience Bali’s natural beauty with views of vibrant rice terraces and dense tropical forests',
+                'Accessible for All Riders: Enjoy trails designed for all skill levels, making it suitable for both new and experienced riders',
+                'Authentic Village Exploration: Pass through local villages, offering a unique glimpse into Balinese rural life',
+                'Relaxing Finish: Unwind after your ride with a tasty meal, perfect for recharging and reflecting on the adventure'
+            ],
+            pickUpTimes: {
+                morning: {
+                    'Nusa Dua and Jimbaran': '08.00 – 08.15',
+                    'Kuta, Seminyak, Legian': '08.00 – 08.15',
+                    'Canggu': '08.00 – 08.15',
+                    'Sanur': '08.30 – 08.45',
+                    'Ubud': '09.00 – 09.15'
+                },
+                afternoon: {
+                    'Nusa Dua and Jimbaran': '12.00 – 12.15',
+                    'Kuta, Seminyak, Legian': '12.00 – 12.15',
+                    'Canggu': '12.00 – 12.15',
+                    'Sanur': '12.30 – 12.45',
+                    'Ubud': '13.00 – 13.15'
+                }
+            },
+            itinerary: {
+                morning: [
+                    { time: '08:00 – 09:15', desc: 'Hotel pick-up (available from Ubud, Sanur, Kuta, Seminyak, Legian, Nusa Dua, Jimbaran, Pecatu, Canggu, and Tanjung Benoa)' },
+                    { time: '09:15 – 10:45', desc: 'Enjoy Bali ATV Quad Bike Ubud Adventure Tour (1.5 hours)' },
+                    { time: '10:45 – 11:15', desc: 'Arrive at finish point (Towel, shower, and change)' },
+                    { time: '11:15 – 12:00', desc: 'Lunch' },
+                    { time: '13:00', desc: 'Return to hotel' }
+                ],
+                afternoon: [
+                    { time: '12:00 – 13:15', desc: 'Hotel pick-up (available from Ubud, Sanur, Kuta, Seminyak, Legian, Nusa Dua, Jimbaran, Pecatu, Canggu, and Tanjung Benoa)' },
+                    { time: '13:15 – 14:45', desc: 'Enjoy Bali ATV Quad Bike Ubud Adventure Tour (1.5 hours)' },
+                    { time: '14:45 – 15:15', desc: 'Arrive at finish point (Towel, shower, and change)' },
+                    { time: '15:15 – 16:00', desc: 'Lunch' },
+                    { time: '17:00', desc: 'Return to hotel' }
+                ]
+            }
+        }
+    };
+
     async function loadDetail() {
         try {
             const res = await fetch(`/api/${type}s/${id}`);
@@ -204,12 +348,116 @@
             }
             
             if (type === 'tour') {
-                // Parse itinerary menjadi list yang rapi
+                // Deteksi apakah ini paket ATV
+                const isATV = item.title.toLowerCase().includes('atv') || item.title.toLowerCase().includes('quad');
+                const pricePer = item.title.toLowerCase().includes('driver') ? '/mobil' : '/person';
                 const includedItems = parseIncludedItems(item.itinerary);
-                const pricePer = item.title.toLowerCase().includes('driver') ? '/mobil' : '/pax';
+                
+                let extraHtml = '';
+                
+                if (isATV) {
+                    extraHtml = `
+                        <!-- Area Coverage Note -->
+                        <div class="note-text">
+                            <i class="fas fa-map-marker-alt"></i> <strong>Note:</strong> Prices are applicable for pick-up and drop-off services within the following areas: Ubud, Kuta, Legian, Seminyak, Tanjung Benoa, Jimbaran, Nusa Dua, Canggu, Denpasar, and Sanur. Please note that different prices may apply for pick-ups outside of these specified locations.
+                        </div>
+                        
+                        <!-- Pick-Up Times -->
+                        <div class="section-card">
+                            <h3 class="section-title-detail"><i class="fas fa-clock"></i> Pick-Up Time</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                                <div class="time-slot">
+                                    <h4><i class="fas fa-sun"></i> Morning Trip</h4>
+                                    <div class="time-list">
+                                        ${Object.entries(extraDetails.atv.pickUpTimes.morning).map(([area, time]) => `<span><strong>${area}:</strong> ${time}</span>`).join('')}
+                                    </div>
+                                </div>
+                                <div class="time-slot">
+                                    <h4><i class="fas fa-moon"></i> Afternoon Trip</h4>
+                                    <div class="time-list">
+                                        ${Object.entries(extraDetails.atv.pickUpTimes.afternoon).map(([area, time]) => `<span><strong>${area}:</strong> ${time}</span>`).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Duration -->
+                        <div class="section-card">
+                            <h3 class="section-title-detail"><i class="fas fa-hourglass-half"></i> Duration</h3>
+                            <p><strong>6 – 7 hours</strong></p>
+                        </div>
+                        
+                        <!-- Itinerary -->
+                        <div class="section-card">
+                            <h3 class="section-title-detail"><i class="fas fa-map"></i> Itinerary</h3>
+                            <h4 style="color: #0f766e; margin: 16px 0 12px;"><i class="fas fa-sun"></i> Morning Trip:</h4>
+                            ${extraDetails.atv.itinerary.morning.map(step => `
+                                <div class="itinerary-step">
+                                    <div class="itinerary-time">${step.time}</div>
+                                    <div>${step.desc}</div>
+                                </div>
+                            `).join('')}
+                            <h4 style="color: #0f766e; margin: 16px 0 12px;"><i class="fas fa-moon"></i> Afternoon Trip:</h4>
+                            ${extraDetails.atv.itinerary.afternoon.map(step => `
+                                <div class="itinerary-step">
+                                    <div class="itinerary-time">${step.time}</div>
+                                    <div>${step.desc}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <!-- Highlights -->
+                        <div class="section-card">
+                            <h3 class="section-title-detail"><i class="fas fa-star"></i> Highlights</h3>
+                            <div class="included-grid">
+                                ${extraDetails.atv.highlights.map(h => `
+                                    <div class="included-item">
+                                        <i class="fas fa-crown"></i>
+                                        <span>${h}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- What to Bring -->
+                        <div class="section-card">
+                            <h3 class="section-title-detail"><i class="fas fa-suitcase"></i> What to Bring</h3>
+                            <div class="included-grid">
+                                ${extraDetails.atv.whatToBring.map(w => `
+                                    <div class="included-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>${w}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Info -->
+                        <div class="section-card">
+                            <h3 class="section-title-detail"><i class="fas fa-info-circle"></i> Additional Info</h3>
+                            <ul class="terms-list">
+                                ${extraDetails.atv.additionalInfo.map(info => `<li>${info}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <!-- Terms & Conditions -->
+                        <div class="section-card">
+                            <h3 class="section-title-detail"><i class="fas fa-file-contract"></i> Terms & Conditions</h3>
+                            <ul class="terms-list">
+                                <li>Reservations or bookings via WhatsApp or Booking Form</li>
+                                <li>Payment upon arrival at location (Cash, Debit or Credit Card) or Online Payment (Paypal)</li>
+                                <li>Cancellation fee to 50% of the total payment will be charged if a confirmed booking is cancelled within one day prior to clients pick up</li>
+                                <li>No-Show will be charge of 100% of the total payment</li>
+                                <li>The photos and videos displayed on our website are from one or several providers or partners with whom we collaborate. We work in partnership with several providers or partners.</li>
+                                <li>The location of activities is based on the availability of our providers or partners on the day of the activities</li>
+                                <li>Note: Terms & conditions for group bookings (over 10 persons) are regulated differently</li>
+                            </ul>
+                        </div>
+                    `;
+                }
                 
                 container.innerHTML = `
-                    <div class="detail-header">
+                    <div class="detail-header" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('${item.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}'); background-size: cover; background-position: center;">
                         <h1>${escapeHtml(item.title)}</h1>
                         <div class="price-tag">
                             IDR ${new Intl.NumberFormat('id-ID').format(item.price)}${pricePer}
@@ -240,33 +488,41 @@
                         </div>
                     </div>
                     
-                    <div class="included-list">
-                        <h3><i class="fas fa-check-circle" style="color: #10b981;"></i> What's Included:</h3>
-                        <ul>
-                            ${includedItems.map(item => `<li><i class="fas fa-check-circle"></i> ${escapeHtml(item)}</li>`).join('')}
-                        </ul>
+                    <div class="section-card">
+                        <h3 class="section-title-detail"><i class="fas fa-gift"></i> What's Included:</h3>
+                        <div class="included-grid">
+                            ${includedItems.map(item => `
+                                <div class="included-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>${escapeHtml(item)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                     
-                    <div style="margin: 32px 0;">
-                        <h3 class="section-title-small">📝 Deskripsi Tour</h3>
+                    <div class="section-card">
+                        <h3 class="section-title-detail"><i class="fas fa-align-left"></i> Deskripsi Tour</h3>
                         <p style="line-height: 1.8; color: #334155;">${escapeHtml(item.description || 'Nikmati pengalaman liburan tak terlupakan di Bali dengan paket tour eksklusif ini.')}</p>
                     </div>
+                    
+                    ${extraHtml}
                     
                     <div class="booking-card">
                         <h3>✈️ Ready untuk Berpetualang?</h3>
                         <p>Booking sekarang melalui WhatsApp. Payment on arrival! 💳</p>
-                        <a href="https://wa.me/6281234567890?text=${encodeURIComponent(`Halo, saya ingin booking tour: ${item.title}\n\nDurasi: ${item.duration || 'Full Day'}\nHarga: IDR ${new Intl.NumberFormat('id-ID').format(item.price)}\n\nMohon info ketersediaan untuk tanggal berikutnya. Terima kasih!`)}" class="btn-wa" target="_blank">
+                        <a href="https://wa.me/6281234567890?text=${encodeURIComponent(`Halo, saya ingin booking: ${item.title}\n\nDurasi: ${item.duration || 'Full Day'}\nHarga: IDR ${new Intl.NumberFormat('id-ID').format(item.price)}\n\nMohon info ketersediaan untuk tanggal berikutnya. Terima kasih!`)}" class="btn-wa" target="_blank">
                             <i class="fab fa-whatsapp"></i> Booking via WhatsApp
                         </a>
-                        <p style="margin-top: 20px; font-size: 0.8rem; opacity: 0.9;">✅ Respon cepat dalam < 1 jam</p>
+                        <p style="margin-top: 20px; font-size: 0.8rem; opacity: 0.9;">✅ Respon cepat dalam < 1 jam | Payment on Arrival</p>
                     </div>
                 `;
             } 
             else if (type === 'villa') {
+                // Villa detail (tetap sama seperti sebelumnya)
                 const facilitiesList = (item.facilities || '').split(',').map(f => f.trim());
                 
                 container.innerHTML = `
-                    <div class="detail-header">
+                    <div class="detail-header" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('${item.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}'); background-size: cover; background-position: center;">
                         <h1>${escapeHtml(item.name)}</h1>
                         <div class="price-tag">
                             IDR ${new Intl.NumberFormat('id-ID').format(item.price)}<span style="font-size: 1rem;">/malam</span>
@@ -297,15 +553,20 @@
                         </div>
                     </div>
                     
-                    <div class="included-list">
-                        <h3><i class="fas fa-star" style="color: #f59e0b;"></i> Fasilitas Villa:</h3>
-                        <ul>
-                            ${facilitiesList.map(f => `<li><i class="fas fa-check-circle"></i> ${escapeHtml(f)}</li>`).join('')}
-                        </ul>
+                    <div class="section-card">
+                        <h3 class="section-title-detail"><i class="fas fa-star"></i> Fasilitas Villa</h3>
+                        <div class="included-grid">
+                            ${facilitiesList.map(f => `
+                                <div class="included-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>${escapeHtml(f)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                     
-                    <div style="margin: 32px 0;">
-                        <h3 class="section-title-small">🏡 Deskripsi Villa</h3>
+                    <div class="section-card">
+                        <h3 class="section-title-detail"><i class="fas fa-align-left"></i> Deskripsi Villa</h3>
                         <p style="line-height: 1.8; color: #334155;">${escapeHtml(item.description || 'Villa mewah dengan desain modern dan fasilitas lengkap untuk liburan impian Anda.')}</p>
                     </div>
                     
@@ -318,15 +579,6 @@
                         <p style="margin-top: 20px; font-size: 0.8rem; opacity: 0.9;">✅ Respon cepat, payment on arrival</p>
                     </div>
                 `;
-            }
-            
-            // Load gambar terpisah
-            const mainImage = item.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg';
-            const detailHeader = document.querySelector('.detail-header');
-            if (detailHeader) {
-                detailHeader.style.background = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('${mainImage}')`;
-                detailHeader.style.backgroundSize = 'cover';
-                detailHeader.style.backgroundPosition = 'center';
             }
             
         } catch(e) {
@@ -347,7 +599,6 @@
             ];
         }
         
-        // Pisahkan berdasarkan newline dan filter yang dimulai dengan ✅ atau bullet point
         const lines = itinerary.split('\n');
         const items = lines
             .map(line => line.replace(/^[✅\-\*]\s*/, '').trim())
