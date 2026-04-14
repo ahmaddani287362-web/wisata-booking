@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail - Wanderly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-container">
+        <div class="logo">Wanderly</div>
+        <div class="nav-links">
+            <a href="/index.html">Home</a>
+            <a href="/tour.html">Tour</a>
+            <a href="/villa.html">Villa</a>
+            <a href="/admin.html" class="btn-admin">Admin</a>
+        </div>
+    </div>
+</div>
+
+<main>
+    <div class="container section">
+        <div id="detail-content" style="max-width:800px; margin:0 auto;">
+            <div class="spinner"></div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">© 2025 Wanderly — Premium Travel Booking</div>
+</footer>
+
+<a href="https://wa.me/6281234567890" class="float-wa" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
+    const id = urlParams.get('id');
+
+    async function loadDetail() {
+        try {
+            const res = await fetch(`/api/${type}s/${id}`);
+            const item = await res.json();
+            const container = document.getElementById('detail-content');
+            
+            if (type === 'tour') {
+                container.innerHTML = `
+                    <img src="${item.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" style="width:100%; border-radius:24px; margin-bottom:24px;">
+                    <h1>${item.title}</h1>
+                    <p class="card-price" style="font-size:1.8rem;">Rp ${new Intl.NumberFormat('id-ID').format(item.price)}</p>
+                    <p><i class="far fa-clock"></i> ${item.duration || '3D2N'}</p>
+                    <div style="margin:24px 0"><h3>📝 Deskripsi</h3><p>${item.description || 'Paket wisata eksklusif.'}</p></div>
+                    <div style="margin:24px 0"><h3>📅 Itinerary</h3><p style="white-space:pre-line">${item.itinerary || 'Day 1: Tiba\nDay 2: Tour\nDay 3: Pulang'}</p></div>
+                    <a href="https://wa.me/6281234567890?text=Saya%20ingin%20booking%20tour%20${encodeURIComponent(item.title)}" class="btn-primary" target="_blank">📲 Book via WhatsApp</a>
+                `;
+            } else {
+                container.innerHTML = `
+                    <img src="${item.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" style="width:100%; border-radius:24px; margin-bottom:24px;">
+                    <h1>${item.name}</h1>
+                    <p class="card-price" style="font-size:1.8rem;">Rp ${new Intl.NumberFormat('id-ID').format(item.price)}/malam</p>
+                    <p><i class="fas fa-map-marker-alt"></i> ${item.location || 'Bali'}</p>
+                    <div style="margin:24px 0"><h3>📝 Deskripsi</h3><p>${item.description || 'Villa mewah dengan fasilitas lengkap.'}</p></div>
+                    <div style="margin:24px 0"><h3>✨ Fasilitas</h3><p>${item.facilities || 'Private pool, AC, WiFi, Breakfast'}</p></div>
+                    <a href="https://wa.me/6281234567890?text=Saya%20ingin%20booking%20villa%20${encodeURIComponent(item.name)}" class="btn-primary" target="_blank">🏡 Book via WhatsApp</a>
+                `;
+            }
+        } catch(e) {
+            document.getElementById('detail-content').innerHTML = '<p>Gagal memuat data</p>';
+        }
+    }
+    if (type && id) loadDetail();
+</script>
+</body>
+</html>

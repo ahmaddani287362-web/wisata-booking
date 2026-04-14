@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tours - Wanderly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-container">
+        <div class="logo">Wanderly</div>
+        <div class="nav-links">
+            <a href="/index.html">Home</a>
+            <a href="/tour.html" class="active">Tour</a>
+            <a href="/villa.html">Villa</a>
+            <a href="/admin.html" class="btn-admin">Admin</a>
+        </div>
+    </div>
+</div>
+
+<main>
+    <div class="container section">
+        <h2 class="section-title">✨ Semua Paket Tour</h2>
+        <div class="grid" id="tour-list">
+            <div class="spinner"></div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">© 2025 Wanderly — Premium Travel Booking</div>
+</footer>
+
+<a href="https://wa.me/6281234567890" class="float-wa" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<script>
+    async function loadTours() {
+        try {
+            const res = await fetch('/api/tours');
+            const tours = await res.json();
+            const container = document.getElementById('tour-list');
+            if (!tours.length) {
+                container.innerHTML = '<p style="text-align:center">Belum ada data tour</p>';
+                return;
+            }
+            container.innerHTML = tours.map(tour => `
+                <div class="card" onclick="location.href='/detail.html?type=tour&id=${tour.id}'">
+                    <img class="card-img" src="${tour.image || 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}" alt="${tour.title}">
+                    <div class="card-content">
+                        <div class="card-title">${tour.title}</div>
+                        <div class="card-price">Rp ${new Intl.NumberFormat('id-ID').format(tour.price)}</div>
+                        <div>${tour.duration || '3D2N'}</div>
+                        <div style="margin-top:12px"><span class="btn-outline">View Detail →</span></div>
+                    </div>
+                </div>
+            `).join('');
+        } catch(e) { console.error(e); }
+    }
+    loadTours();
+</script>
+</body>
+</html>
