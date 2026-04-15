@@ -1,14 +1,15 @@
 const express = require('express');
 const path = require('path');
-const multer = require('multer');
 const cors = require('cors');
-const session = require('express-session');
-const bcrypt = require('bcryptjs');
 const pool = require('./db');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Admin credentials (hardcoded tapi aman karena di environment variable)
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
 // Middleware
 app.use(cors());
@@ -16,42 +17,43 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Session
-app.use(session({
-    secret: 'premium-wisata-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 3600000 }
-}));
-
-// Multer memory storage
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-// Auth middleware
+// Auth middleware untuk admin API
 function isAdmin(req, res, next) {
-    if (req.session.isAdmin) return next();
-    res.status(401).json({ error: 'Unauthorized' });
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    const token = authHeader.split(' ')[1];
+    // Simple token validation (base64 encoded credentials)
+    const expectedToken = Buffer.from(`${ADMIN_USERNAME}:${ADMIN_PASSWORD}`).toString('base64');
+    
+    if (token === expectedToken) {
+        next();
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
 }
 
-// Admin login
-app.post('/api/admin/login', async (req, res) => {
+// ============= AUTH ROUTES =============
+app.post('/api/admin/login', (req, res) => {
     const { username, password } = req.body;
-    if (username === 'admin' && password === 'admin123') {
-        req.session.isAdmin = true;
-        res.json({ success: true });
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        const token = Buffer.from(`${username}:${password}`).toString('base64');
+        res.json({ success: true, token });
     } else {
         res.status(401).json({ error: 'Invalid credentials' });
     }
 });
 
-app.post('/api/admin/logout', (req, res) => {
-    req.session.destroy();
-    res.json({ success: true });
-});
-
 app.get('/api/admin/check', (req, res) => {
-    res.json({ isAdmin: !!req.session.isAdmin });
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.json({ isAdmin: false });
+    }
+    const token = authHeader.split(' ')[1];
+    const expectedToken = Buffer.from(`${ADMIN_USERNAME}:${ADMIN_PASSWORD}`).toString('base64');
+    res.json({ isAdmin: token === expectedToken });
 });
 
 // ============= TOURS API =============
