@@ -7,9 +7,8 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Admin credentials (hardcoded tapi aman karena di environment variable)
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_USERNAME = 'admin';
+const ADMIN_PASSWORD = 'admin123';
 
 // Middleware
 app.use(cors());
@@ -17,15 +16,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Auth middleware untuk admin API
+// Auth middleware
 function isAdmin(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
-    
     const token = authHeader.split(' ')[1];
-    // Simple token validation (base64 encoded credentials)
     const expectedToken = Buffer.from(`${ADMIN_USERNAME}:${ADMIN_PASSWORD}`).toString('base64');
     
     if (token === expectedToken) {
@@ -35,7 +32,7 @@ function isAdmin(req, res, next) {
     }
 }
 
-// ============= AUTH ROUTES =============
+// ============= AUTH =============
 app.post('/api/admin/login', (req, res) => {
     const { username, password } = req.body;
     if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
@@ -56,7 +53,7 @@ app.get('/api/admin/check', (req, res) => {
     res.json({ isAdmin: token === expectedToken });
 });
 
-// ============= TOURS API =============
+// ============= TOURS =============
 app.get('/api/tours', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM tours ORDER BY id DESC');
@@ -107,7 +104,7 @@ app.delete('/api/tours/:id', isAdmin, async (req, res) => {
     res.json({ success: true });
 });
 
-// ============= ACTIVITIES API =============
+// ============= ACTIVITIES =============
 app.get('/api/activities', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM activities ORDER BY id DESC');
@@ -158,7 +155,7 @@ app.delete('/api/activities/:id', isAdmin, async (req, res) => {
     res.json({ success: true });
 });
 
-// ============= VILLAS API =============
+// ============= VILLAS =============
 app.get('/api/villas', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM villas ORDER BY id DESC');
@@ -209,7 +206,7 @@ app.delete('/api/villas/:id', isAdmin, async (req, res) => {
     res.json({ success: true });
 });
 
-// ============= CONTACT API =============
+// ============= CONTACTS =============
 app.get('/api/contacts', isAdmin, async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM contacts ORDER BY created_at DESC');
