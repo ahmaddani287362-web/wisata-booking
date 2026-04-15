@@ -104,12 +104,13 @@ app.delete('/api/tours/:id', isAdmin, async (req, res) => {
     res.json({ success: true });
 });
 
-// ============= ACTIVITIES =============
+// ============= ACTIVITIES (BENAR - menggunakan "activities") =============
 app.get('/api/activities', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM activities ORDER BY id DESC');
         res.json(result.rows);
     } catch (err) {
+        console.error('Activities GET error:', err.message);
         res.json([]);
     }
 });
@@ -223,7 +224,7 @@ app.post('/api/contacts', async (req, res) => {
             'INSERT INTO contacts (name, email, phone, message) VALUES ($1, $2, $3, $4) RETURNING *',
             [name, email, phone, message]
         );
-        res.json({ success: true, data: result.rows[0] });
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
