@@ -236,7 +236,8 @@
     }
 
     function toggleForm(formId){
-        document.getElementById(formId).classList.toggle('active');
+        let form = document.getElementById(formId);
+        if(form) form.classList.toggle('active');
     }
 
     async function login(){
@@ -287,49 +288,59 @@
     }
 
     async function loadDashboard(){
-        let tours=await(await fetch('/api/tours')).json();
-        let acts=await(await fetch('/api/activities')).json();
-        let villas=await(await fetch('/api/villas')).json();
-        let contactsRes=await fetch('/api/contacts',{headers:getAuthHeaders()});
-        let contacts=contactsRes.ok?await contactsRes.json():[];
-        document.getElementById('totalTours').innerText=tours.length;
-        document.getElementById('totalActivities').innerText=acts.length;
-        document.getElementById('totalVillas').innerText=villas.length;
-        document.getElementById('totalContacts').innerText=contacts.length;
+        try{
+            let tours=await(await fetch('/api/tours')).json();
+            let acts=await(await fetch('/api/activities')).json();
+            let villas=await(await fetch('/api/villas')).json();
+            let contactsRes=await fetch('/api/contacts',{headers:getAuthHeaders()});
+            let contacts=contactsRes.ok?await contactsRes.json():[];
+            document.getElementById('totalTours').innerText=tours.length;
+            document.getElementById('totalActivities').innerText=acts.length;
+            document.getElementById('totalVillas').innerText=villas.length;
+            document.getElementById('totalContacts').innerText=contacts.length;
+        }catch(e){console.error(e);}
     }
 
     async function loadTours(){
-        let tours=await(await fetch('/api/tours')).json();
-        let html='<table class="data-table"><thead><tr><th>ID</th><th>Image</th><th>Title</th><th>Price</th><th>Duration</th><th>Actions</th></tr></thead><tbody>';
-        tours.forEach(t=>{html+=`<tr><td>${t.id}</td><td><img class="table-image" src="${t.image||'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}"></td><td><strong>${escapeHtml(t.title)}</strong></td><td>Rp ${new Intl.NumberFormat('id-ID').format(t.price)}</td><td>${t.duration||'-'}</td><td><div class="action-buttons"><button class="btn-edit" onclick="openEditModal('tour',${t.id})">Edit</button><button class="btn-delete" onclick="confirmDelete('tour',${t.id})">Delete</button></div></td></tr>`});
-        html+='</tbody></table>';
-        document.getElementById('toursTable').innerHTML=html||'<p>No data</p>';
+        try{
+            let tours=await(await fetch('/api/tours')).json();
+            let html='<table class="data-table"><thead><tr><th>ID</th><th>Image</th><th>Title</th><th>Price</th><th>Duration</th><th>Actions</th></tr></thead><tbody>';
+            tours.forEach(t=>{html+=`<tr><td>${t.id}</td><td><img class="table-image" src="${t.image||'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}"></td><td><strong>${escapeHtml(t.title)}</strong></td><td>Rp ${new Intl.NumberFormat('id-ID').format(t.price)}</td><td>${t.duration||'-'}</td><td><div class="action-buttons"><button class="btn-edit" onclick="openEditModal('tour',${t.id})">Edit</button><button class="btn-delete" onclick="confirmDelete('tour',${t.id})">Delete</button></div></td></tr>`});
+            html+='</tbody></table>';
+            document.getElementById('toursTable').innerHTML=html||'<p>No data</p>';
+        }catch(e){console.error(e);}
     }
 
     async function loadActivities(){
-        let acts=await(await fetch('/api/activities')).json();
-        let html='<table class="data-table"><thead><tr><th>ID</th><th>Image</th><th>Title</th><th>Price</th><th>Duration</th><th>Actions</th></tr></thead><tbody>';
-        acts.forEach(a=>{html+=`<tr><td>${a.id}</td><td><img class="table-image" src="${a.image||'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}"></td><td><strong>${escapeHtml(a.title)}</strong></td><td>Rp ${new Intl.NumberFormat('id-ID').format(a.price)}</td><td>${a.duration||'-'}</td><td><div class="action-buttons"><button class="btn-edit" onclick="openEditModal('activity',${a.id})">Edit</button><button class="btn-delete" onclick="confirmDelete('activity',${a.id})">Delete</button></div></td></tr>`});
-        html+='</tbody></table>';
-        document.getElementById('activitiesTable').innerHTML=html||'<p>No data</p>';
+        try{
+            let acts=await(await fetch('/api/activities')).json();
+            let html='<table class="data-table"><thead><tr><th>ID</th><th>Image</th><th>Title</th><th>Price</th><th>Duration</th><th>Actions</th></tr></thead><tbody>';
+            acts.forEach(a=>{html+=`<tr><td>${a.id}</td><td><img class="table-image" src="${a.image||'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}"></td><td><strong>${escapeHtml(a.title)}</strong></td><td>Rp ${new Intl.NumberFormat('id-ID').format(a.price)}</td><td>${a.duration||'-'}</td><td><div class="action-buttons"><button class="btn-edit" onclick="openEditModal('activity',${a.id})">Edit</button><button class="btn-delete" onclick="confirmDelete('activity',${a.id})">Delete</button></div></td></tr>`});
+            html+='</tbody></table>';
+            document.getElementById('activitiesTable').innerHTML=html||'<p>No data</p>';
+        }catch(e){console.error(e);}
     }
 
     async function loadVillas(){
-        let villas=await(await fetch('/api/villas')).json();
-        let html='<table class="data-table"><thead><tr><th>ID</th><th>Image</th><th>Name</th><th>Price</th><th>Location</th><th>Actions</th></tr></thead><tbody>';
-        villas.forEach(v=>{html+=`<tr><td>${v.id}</td><td><img class="table-image" src="${v.image||'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}"></td><td><strong>${escapeHtml(v.name)}</strong></td><td>Rp ${new Intl.NumberFormat('id-ID').format(v.price)}/night</td><td>${escapeHtml(v.location)||'-'}</td><td><div class="action-buttons"><button class="btn-edit" onclick="openEditModal('villa',${v.id})">Edit</button><button class="btn-delete" onclick="confirmDelete('villa',${v.id})">Delete</button></div></td></tr>`});
-        html+='</tbody></table>';
-        document.getElementById('villasTable').innerHTML=html||'<p>No data</p>';
+        try{
+            let villas=await(await fetch('/api/villas')).json();
+            let html='<table class="data-table"><thead><tr><th>ID</th><th>Image</th><th>Name</th><th>Price</th><th>Location</th><th>Actions</th></tr></thead><tbody>';
+            villas.forEach(v=>{html+=`<tr><td>${v.id}</td><td><img class="table-image" src="${v.image||'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg'}"></td><td><strong>${escapeHtml(v.name)}</strong></td><td>Rp ${new Intl.NumberFormat('id-ID').format(v.price)}/night</td><td>${escapeHtml(v.location)||'-'}</td><td><div class="action-buttons"><button class="btn-edit" onclick="openEditModal('villa',${v.id})">Edit</button><button class="btn-delete" onclick="confirmDelete('villa',${v.id})">Delete</button></div></td></tr>`});
+            html+='</tbody></table>';
+            document.getElementById('villasTable').innerHTML=html||'<p>No data</p>';
+        }catch(e){console.error(e);}
     }
 
     async function loadContacts(){
-        let res=await fetch('/api/contacts',{headers:getAuthHeaders()});
-        if(!res.ok) return;
-        let contacts=await res.json();
-        let html='<table class="data-table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
-        contacts.forEach(c=>{html+=`<tr><td>${c.id}</td><td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.email)}</td><td>${escapeHtml(c.phone)||'-'}</td><td><small>${escapeHtml(c.message).substring(0,50)}...</small></td><td><span style="background:#fef3c7;padding:4px12px;border-radius:20px">${c.status}</span></td><td><button class="btn-delete" onclick="confirmDelete('contact',${c.id})">Delete</button></td></tr>`});
-        html+='</tbody></table>';
-        document.getElementById('contactsTable').innerHTML=html;
+        try{
+            let res=await fetch('/api/contacts',{headers:getAuthHeaders()});
+            if(!res.ok) return;
+            let contacts=await res.json();
+            let html='<table class="data-table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+            contacts.forEach(c=>{html+=`<tr><td>${c.id}</td><td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.email)}</td><td>${escapeHtml(c.phone)||'-'}</td><td><small>${escapeHtml(c.message).substring(0,50)}...</small></td><td><span style="background:#fef3c7;padding:4px 12px;border-radius:20px">${c.status}</span></td><td><button class="btn-delete" onclick="confirmDelete('contact',${c.id})">Delete</button></td></tr>`});
+            html+='</tbody></table>';
+            document.getElementById('contactsTable').innerHTML=html;
+        }catch(e){console.error(e);}
     }
 
     // ADD FORMS
@@ -337,7 +348,7 @@
         e.preventDefault(); let fd=new FormData(e.target);
         let data={title:fd.get('title'),price:parseInt(fd.get('price')),duration:fd.get('duration'),imageUrl:fd.get('imageUrl'),description:fd.get('description'),itinerary:fd.get('itinerary')};
         let res=await fetch('/api/tours',{method:'POST',headers:getAuthHeaders(),body:JSON.stringify(data)});
-        if(res.ok){showToast('Tour added!');e.target.reset();loadTours();loadDashboard();document.getElementById('tourForm').classList.remove('active');}
+        if(res.ok){showToast('Tour added!');e.target.reset();loadTours();loadDashboard();document.getElementById('tourForm')?.classList.remove('active');}
         else showToast('Failed','error');
     });
 
@@ -345,7 +356,7 @@
         e.preventDefault(); let fd=new FormData(e.target);
         let data={title:fd.get('title'),price:parseInt(fd.get('price')),duration:fd.get('duration'),imageUrl:fd.get('imageUrl'),description:fd.get('description'),included:fd.get('included'),highlights:fd.get('highlights'),whatToBring:fd.get('whatToBring'),additionalInfo:fd.get('additionalInfo'),terms:fd.get('terms')};
         let res=await fetch('/api/activities',{method:'POST',headers:getAuthHeaders(),body:JSON.stringify(data)});
-        if(res.ok){showToast('Activity added!');e.target.reset();loadActivities();loadDashboard();document.getElementById('activityForm').classList.remove('active');}
+        if(res.ok){showToast('Activity added!');e.target.reset();loadActivities();loadDashboard();document.getElementById('activityForm')?.classList.remove('active');}
         else showToast('Failed','error');
     });
 
@@ -353,46 +364,48 @@
         e.preventDefault(); let fd=new FormData(e.target);
         let data={name:fd.get('name'),price:parseInt(fd.get('price')),location:fd.get('location'),imageUrl:fd.get('imageUrl'),description:fd.get('description'),facilities:fd.get('facilities')};
         let res=await fetch('/api/villas',{method:'POST',headers:getAuthHeaders(),body:JSON.stringify(data)});
-        if(res.ok){showToast('Villa added!');e.target.reset();loadVillas();loadDashboard();document.getElementById('villaForm').classList.remove('active');}
+        if(res.ok){showToast('Villa added!');e.target.reset();loadVillas();loadDashboard();document.getElementById('villaForm')?.classList.remove('active');}
         else showToast('Failed','error');
     });
 
     // EDIT MODAL
     async function openEditModal(type,id){
-        let res=await fetch(`/api/${type}s/${id}`);
-        let item=await res.json();
-        document.getElementById('editId').value=id;
-        document.getElementById('editType').value=type;
-        document.getElementById('modalTitle').innerHTML=type==='tour'?'✏️ Edit Tour':type==='activity'?'✏️ Edit Activity':'✏️ Edit Villa';
-        let fields='';
-        if(type==='tour'){
-            fields=`<div class="form-group full-width"><label>Title</label><input id="editTitle" value="${escapeHtml(item.title)}"></div>
-                    <div class="form-group"><label>Price</label><input id="editPrice" value="${item.price}"></div>
-                    <div class="form-group"><label>Duration</label><input id="editDuration" value="${escapeHtml(item.duration||'')}"></div>
-                    <div class="form-group full-width"><label>Image URL</label><input id="editImageUrl" value="${escapeHtml(item.image||'')}"></div>
-                    <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description||'')}</textarea></div>
-                    <div class="form-group full-width"><label>What's Included</label><textarea id="editItinerary" rows="4">${escapeHtml(item.itinerary||'')}</textarea></div>`;
-        }else if(type==='activity'){
-            fields=`<div class="form-group full-width"><label>Title</label><input id="editTitle" value="${escapeHtml(item.title)}"></div>
-                    <div class="form-group"><label>Price</label><input id="editPrice" value="${item.price}"></div>
-                    <div class="form-group"><label>Duration</label><input id="editDuration" value="${escapeHtml(item.duration||'')}"></div>
-                    <div class="form-group full-width"><label>Image URL</label><input id="editImageUrl" value="${escapeHtml(item.image||'')}"></div>
-                    <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description||'')}</textarea></div>
-                    <div class="form-group full-width"><label>What's Included</label><textarea id="editIncluded" rows="4">${escapeHtml(item.included||'')}</textarea></div>
-                    <div class="form-group full-width"><label>Highlights</label><textarea id="editHighlights" rows="3">${escapeHtml(item.highlights||'')}</textarea></div>
-                    <div class="form-group full-width"><label>What to Bring</label><textarea id="editWhatToBring" rows="3">${escapeHtml(item.whatToBring||'')}</textarea></div>
-                    <div class="form-group full-width"><label>Additional Info</label><textarea id="editAdditionalInfo" rows="3">${escapeHtml(item.additionalInfo||'')}</textarea></div>
-                    <div class="form-group full-width"><label>Terms</label><textarea id="editTerms" rows="3">${escapeHtml(item.terms||'')}</textarea></div>`;
-        }else{
-            fields=`<div class="form-group full-width"><label>Name</label><input id="editName" value="${escapeHtml(item.name)}"></div>
-                    <div class="form-group"><label>Price</label><input id="editPrice" value="${item.price}"></div>
-                    <div class="form-group"><label>Location</label><input id="editLocation" value="${escapeHtml(item.location||'')}"></div>
-                    <div class="form-group full-width"><label>Image URL</label><input id="editImageUrl" value="${escapeHtml(item.image||'')}"></div>
-                    <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description||'')}</textarea></div>
-                    <div class="form-group full-width"><label>Facilities</label><textarea id="editFacilities" rows="3">${escapeHtml(item.facilities||'')}</textarea></div>`;
-        }
-        document.getElementById('editFields').innerHTML=fields;
-        document.getElementById('editModal').classList.add('active');
+        try{
+            let res=await fetch(`/api/${type}s/${id}`);
+            let item=await res.json();
+            document.getElementById('editId').value=id;
+            document.getElementById('editType').value=type;
+            document.getElementById('modalTitle').innerHTML=type==='tour'?'✏️ Edit Tour':type==='activity'?'✏️ Edit Activity':'✏️ Edit Villa';
+            let fields='';
+            if(type==='tour'){
+                fields=`<div class="form-group full-width"><label>Title</label><input id="editTitle" value="${escapeHtml(item.title)}"></div>
+                        <div class="form-group"><label>Price</label><input id="editPrice" value="${item.price}"></div>
+                        <div class="form-group"><label>Duration</label><input id="editDuration" value="${escapeHtml(item.duration||'')}"></div>
+                        <div class="form-group full-width"><label>Image URL</label><input id="editImageUrl" value="${escapeHtml(item.image||'')}"></div>
+                        <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description||'')}</textarea></div>
+                        <div class="form-group full-width"><label>What's Included</label><textarea id="editItinerary" rows="4">${escapeHtml(item.itinerary||'')}</textarea></div>`;
+            }else if(type==='activity'){
+                fields=`<div class="form-group full-width"><label>Title</label><input id="editTitle" value="${escapeHtml(item.title)}"></div>
+                        <div class="form-group"><label>Price</label><input id="editPrice" value="${item.price}"></div>
+                        <div class="form-group"><label>Duration</label><input id="editDuration" value="${escapeHtml(item.duration||'')}"></div>
+                        <div class="form-group full-width"><label>Image URL</label><input id="editImageUrl" value="${escapeHtml(item.image||'')}"></div>
+                        <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description||'')}</textarea></div>
+                        <div class="form-group full-width"><label>What's Included</label><textarea id="editIncluded" rows="4">${escapeHtml(item.included||'')}</textarea></div>
+                        <div class="form-group full-width"><label>Highlights</label><textarea id="editHighlights" rows="3">${escapeHtml(item.highlights||'')}</textarea></div>
+                        <div class="form-group full-width"><label>What to Bring</label><textarea id="editWhatToBring" rows="3">${escapeHtml(item.whatToBring||'')}</textarea></div>
+                        <div class="form-group full-width"><label>Additional Info</label><textarea id="editAdditionalInfo" rows="3">${escapeHtml(item.additionalInfo||'')}</textarea></div>
+                        <div class="form-group full-width"><label>Terms</label><textarea id="editTerms" rows="3">${escapeHtml(item.terms||'')}</textarea></div>`;
+            }else{
+                fields=`<div class="form-group full-width"><label>Name</label><input id="editName" value="${escapeHtml(item.name)}"></div>
+                        <div class="form-group"><label>Price</label><input id="editPrice" value="${item.price}"></div>
+                        <div class="form-group"><label>Location</label><input id="editLocation" value="${escapeHtml(item.location||'')}"></div>
+                        <div class="form-group full-width"><label>Image URL</label><input id="editImageUrl" value="${escapeHtml(item.image||'')}"></div>
+                        <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description||'')}</textarea></div>
+                        <div class="form-group full-width"><label>Facilities</label><textarea id="editFacilities" rows="3">${escapeHtml(item.facilities||'')}</textarea></div>`;
+            }
+            document.getElementById('editFields').innerHTML=fields;
+            document.getElementById('editModal').classList.add('active');
+        }catch(e){console.error(e); showToast('Error loading data','error');}
     }
 
     document.getElementById('editForm').addEventListener('submit',async(e)=>{
@@ -413,6 +426,7 @@
     });
 
     function confirmDelete(type,id){ pendingDeleteId=id; pendingDeleteType=type; document.getElementById('deleteModal').classList.add('active'); }
+    
     document.getElementById('confirmDeleteBtn').onclick=async()=>{
         if(pendingDeleteId&&pendingDeleteType){
             let res=await fetch(`/api/${pendingDeleteType}s/${pendingDeleteId}`,{method:'DELETE',headers:getAuthHeaders()});
@@ -420,6 +434,7 @@
             else showToast('Delete failed','error');
         }
     };
+    
     function closeModal(){document.getElementById('editModal').classList.remove('active');}
     function closeDeleteModal(){document.getElementById('deleteModal').classList.remove('active');pendingDeleteId=null;}
     function escapeHtml(t){if(!t)return '';let d=document.createElement('div');d.textContent=t;return d.innerHTML;}
