@@ -378,7 +378,7 @@
             background: white;
             border-radius: 32px;
             padding: 32px;
-            max-width: 550px;
+            max-width: 700px;
             width: 90%;
             max-height: 85vh;
             overflow-y: auto;
@@ -589,15 +589,15 @@
                         <div class="form-grid">
                             <div class="form-group full-width">
                                 <label>Tour Title *</label>
-                                <input type="text" name="title" placeholder="e.g., Bali Paradise Explorer" required>
+                                <input type="text" name="title" placeholder="e.g., Bali ATV Quad Bike Adventure" required>
                             </div>
                             <div class="form-group">
-                                <label>Price (Rp) *</label>
-                                <input type="number" name="price" placeholder="2500000" required>
+                                <label>Price (IDR) *</label>
+                                <input type="number" name="price" placeholder="580000" required>
                             </div>
                             <div class="form-group">
                                 <label>Duration</label>
-                                <input type="text" name="duration" placeholder="e.g., 4D3N">
+                                <input type="text" name="duration" placeholder="e.g., 6-7 hours">
                             </div>
                             <div class="form-group full-width">
                                 <label>Image URL</label>
@@ -608,8 +608,8 @@
                                 <textarea name="description" placeholder="Describe the tour package..."></textarea>
                             </div>
                             <div class="form-group full-width">
-                                <label>Itinerary</label>
-                                <textarea name="itinerary" placeholder="Day 1: ...&#10;Day 2: ...&#10;Day 3: ..."></textarea>
+                                <label>What's Included (pisahkan dengan newline, mulai dengan ✅)</label>
+                                <textarea name="itinerary" placeholder="✅ Private Hotel Pick-up and Drop-off&#10;✅ Private Car with Air Conditioning&#10;✅ Driver (English speaking)&#10;✅ Lunch (Indonesian Food)&#10;✅ Bottled Water&#10;✅ All Entrance Fees"></textarea>
                             </div>
                         </div>
                         <button type="submit" class="btn-primary" style="margin-top: 24px;">+ Publish Tour</button>
@@ -628,7 +628,7 @@
                                 <input type="text" name="name" placeholder="e.g., Villa Cemara" required>
                             </div>
                             <div class="form-group">
-                                <label>Price per Night (Rp) *</label>
+                                <label>Price per Night (IDR) *</label>
                                 <input type="number" name="price" placeholder="1800000" required>
                             </div>
                             <div class="form-group">
@@ -644,7 +644,7 @@
                                 <textarea name="description" placeholder="Describe the villa..."></textarea>
                             </div>
                             <div class="form-group full-width">
-                                <label>Facilities</label>
+                                <label>Facilities (pisahkan dengan koma)</label>
                                 <textarea name="facilities" placeholder="Private pool, AC, WiFi, Breakfast, ..."></textarea>
                             </div>
                         </div>
@@ -770,7 +770,14 @@
         container.innerHTML = `
             <table class="data-table">
                 <thead>
-                    <tr><th>ID</th><th>Image</th><th>Title</th><th>Price</th><th>Duration</th><th>Actions</th></tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th>Duration</th>
+                        <th>Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
                     ${tours.map(t => `
@@ -785,8 +792,8 @@
                                     <button class="btn-edit" onclick="openEditModal('tour', ${t.id})">Edit</button>
                                     <button class="btn-delete" onclick="confirmDelete('tour', ${t.id})">Delete</button>
                                 </div>
-                             </td>
-                         </tr>
+                            </td>
+                        </tr>
                     `).join('')}
                 </tbody>
             </table>
@@ -803,7 +810,16 @@
         }
         container.innerHTML = `
             <table class="data-table">
-                <thead><tr><th>ID</th><th>Image</th><th>Name</th><th>Price</th><th>Location</th><th>Actions</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
                     ${villas.map(v => `
                         <tr>
@@ -817,14 +833,15 @@
                                     <button class="btn-edit" onclick="openEditModal('villa', ${v.id})">Edit</button>
                                     <button class="btn-delete" onclick="confirmDelete('villa', ${v.id})">Delete</button>
                                 </div>
-                             </td>
-                         </tr>
+                            </td>
+                        </tr>
                     `).join('')}
                 </tbody>
             </table>
         `;
     }
 
+    // Add Tour Form
     document.getElementById('addTourForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -845,11 +862,13 @@
             showToast('Tour added successfully!');
             e.target.reset();
             loadTours();
+            loadDashboard();
         } else {
             showToast('Failed to add tour', 'error');
         }
     });
 
+    // Add Villa Form
     document.getElementById('addVillaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -870,14 +889,17 @@
             showToast('Villa added successfully!');
             e.target.reset();
             loadVillas();
+            loadDashboard();
         } else {
             showToast('Failed to add villa', 'error');
         }
     });
 
+    // Open Edit Modal
     async function openEditModal(type, id) {
         const res = await fetch(`/api/${type}s/${id}`);
         const item = await res.json();
+        
         document.getElementById('editId').value = id;
         document.getElementById('editType').value = type;
         document.getElementById('modalTitle').innerHTML = type === 'tour' ? '✏️ Edit Tour' : '✏️ Edit Villa';
@@ -886,30 +908,32 @@
         if (type === 'tour') {
             fieldsHtml = `
                 <div class="form-group full-width"><label>Title</label><input type="text" id="editTitle" value="${escapeHtml(item.title)}" required></div>
-                <div class="form-group"><label>Price</label><input type="number" id="editPrice" value="${item.price}" required></div>
+                <div class="form-group"><label>Price (IDR)</label><input type="number" id="editPrice" value="${item.price}" required></div>
                 <div class="form-group"><label>Duration</label><input type="text" id="editDuration" value="${item.duration || ''}"></div>
                 <div class="form-group full-width"><label>Image URL</label><input type="text" id="editImageUrl" value="${item.image || ''}"></div>
                 <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description || '')}</textarea></div>
-                <div class="form-group full-width"><label>Itinerary</label><textarea id="editItinerary" rows="4">${escapeHtml(item.itinerary || '')}</textarea></div>
+                <div class="form-group full-width"><label>What's Included (pisahkan dengan newline, mulai dengan ✅)</label><textarea id="editItinerary" rows="6">${escapeHtml(item.itinerary || '')}</textarea></div>
             `;
         } else {
             fieldsHtml = `
                 <div class="form-group full-width"><label>Name</label><input type="text" id="editName" value="${escapeHtml(item.name)}" required></div>
-                <div class="form-group"><label>Price</label><input type="number" id="editPrice" value="${item.price}" required></div>
+                <div class="form-group"><label>Price per Night</label><input type="number" id="editPrice" value="${item.price}" required></div>
                 <div class="form-group"><label>Location</label><input type="text" id="editLocation" value="${escapeHtml(item.location || '')}"></div>
                 <div class="form-group full-width"><label>Image URL</label><input type="text" id="editImageUrl" value="${item.image || ''}"></div>
                 <div class="form-group full-width"><label>Description</label><textarea id="editDescription" rows="3">${escapeHtml(item.description || '')}</textarea></div>
-                <div class="form-group full-width"><label>Facilities</label><textarea id="editFacilities" rows="3">${escapeHtml(item.facilities || '')}</textarea></div>
+                <div class="form-group full-width"><label>Facilities (pisahkan dengan koma)</label><textarea id="editFacilities" rows="3">${escapeHtml(item.facilities || '')}</textarea></div>
             `;
         }
         document.getElementById('editFields').innerHTML = fieldsHtml;
         document.getElementById('editModal').classList.add('active');
     }
 
+    // Edit Form Submit
     document.getElementById('editForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('editId').value;
         const type = document.getElementById('editType').value;
+        
         let data = {};
         if (type === 'tour') {
             data = {
@@ -930,27 +954,32 @@
                 facilities: document.getElementById('editFacilities').value
             };
         }
+        
         const res = await fetch(`/api/${type}s/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+        
         if (res.ok) {
             showToast('Data updated successfully!');
             closeModal();
             loadTours();
             loadVillas();
+            loadDashboard();
         } else {
             showToast('Failed to update data', 'error');
         }
     });
 
+    // Confirm Delete
     function confirmDelete(type, id) {
         pendingDeleteId = id;
         pendingDeleteType = type;
         document.getElementById('deleteModal').classList.add('active');
     }
 
+    // Execute Delete
     document.getElementById('confirmDeleteBtn').onclick = async () => {
         if (pendingDeleteId && pendingDeleteType) {
             const res = await fetch(`/api/${pendingDeleteType}s/${pendingDeleteId}`, { method: 'DELETE' });
@@ -966,8 +995,15 @@
         }
     };
 
-    function closeModal() { document.getElementById('editModal').classList.remove('active'); }
-    function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); pendingDeleteId = null; }
+    function closeModal() {
+        document.getElementById('editModal').classList.remove('active');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('active');
+        pendingDeleteId = null;
+        pendingDeleteType = null;
+    }
 
     function escapeHtml(text) {
         if (!text) return '';
@@ -976,6 +1012,7 @@
         return div.innerHTML;
     }
 
+    // Check auth on load
     fetch('/api/admin/check').then(res => res.json()).then(data => {
         if (data.isAdmin) {
             document.getElementById('loginContainer').style.display = 'none';
